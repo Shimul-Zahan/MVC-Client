@@ -6,6 +6,8 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Home from './Pages/Home.jsx'
 import Login from './Pages/Login.jsx'
 import Register from './Pages/Register.jsx'
+import { Provider } from 'react-redux'
+import { store } from './app/store.js'
 
 
 const router = createBrowserRouter([
@@ -31,9 +33,7 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <div className='dark'>
-    <RouterProvider router={router}>
-
-    </RouterProvider>
-  </div>
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 )
