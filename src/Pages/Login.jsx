@@ -1,14 +1,29 @@
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import PulseLoader from "react-spinners/PulseLoader";
+import { loginUser } from "../features/userSlice";
 // import { useSelectro } from 'react-redux'
 // const { status } = useSelector((state => state.user))
 
 export default function Login() {
 
-    const status = "not loading"
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const { status, error } = useSelector((state) => state.user);
 
-    const loginNow = (e) => {
-        e.preventDefault()
+
+    const loginNow = async (e) => {
+        e.preventDefault();
+        const data = {
+            email: e.target.email.value,
+            password: e.target.password.value,
+        };
+        console.log(data);
+        const res = await dispatch(loginUser({ ...data }));
+
+        if (res?.payload?.user) {
+            navigate('/');
+        }
     }
 
     return (
@@ -31,8 +46,9 @@ export default function Login() {
                             </label>
                             <div className="relative">
                                 <input
-                                    id="nui_email"
                                     type="email"
+                                    name="email"
+                                    required
                                     placeholder="Email or Usename"
                                     className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
                                 />
@@ -55,11 +71,11 @@ export default function Login() {
                             </label>
                             <div className="relative">
                                 <input
-                                    id="pass"
-                                    className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
-                                    placeholder="*************"
                                     name="password"
                                     type="password"
+                                    required
+                                    className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
+                                    placeholder="*************"
                                 />
                                 <span className="absolute left-2 top-2">
                                     <svg viewBox="0 0 24 24" fill="none" className="inline-block w-6" xmlns="http://www.w3.org/2000/svg">
@@ -72,6 +88,14 @@ export default function Login() {
                             </div>
                             <h1 className="text-sm">Don't have an account? <Link to="/register" className="underline">Register Now</Link></h1>
                         </div>
+                        {/* if we have an error */}
+                        {
+                            error ? (
+                                <div>
+                                    <p className="text-red-400">{error}</p>
+                                </div>
+                            ) : null
+                        }
                         <button className="rounded px-5 py-2 ring-1 ring-zinc-400 hover:bg-zinc-400/20 dark:ring-zinc-500">
                             {status == "loading" ? <PulseLoader color="#fff" size={10} /> : "Sign In"}
                         </button>
