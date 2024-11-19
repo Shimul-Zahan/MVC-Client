@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from 'axios';
 
 const AUTH_ENDPOINT = `${import.meta.env.VITE_API_ENDPOINT}/auth`;
-console.log(AUTH_ENDPOINT, 'auth pointer');
+// console.log(AUTH_ENDPOINT, 'auth pointer');
 
 const initialState = {
     status: "",

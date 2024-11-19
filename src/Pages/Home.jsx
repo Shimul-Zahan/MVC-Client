@@ -1,16 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Sidebar } from '../Components/Sidebar'
 import { LuMessagesSquare } from "react-icons/lu";
 import { FaRegStopCircle } from "react-icons/fa";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { HiStatusOnline } from "react-icons/hi";
 import { CiSettings } from "react-icons/ci";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getConvo } from '../features/chatSlice';
 
 const Home = () => {
 
   const { user, status } = useSelector((state) => state.user)
   console.log(user, status);
+  const dispatch = useDispatch()
+
+
+  // get conversation
+  useEffect(() => {
+    if (user?.access_token) {
+      dispatch(getConvo(user.access_token))
+    }
+  }, [user])
 
   return (
     <div className='min-h-screen w-full dark:bg-dark_bg dark:text-dark_text flex py-[19px] px-5'>
@@ -42,7 +52,9 @@ const Home = () => {
         {/* sidebar */}
         <Sidebar />
       </div>
-      <h1>Hello</h1>
+      <div className='bg-[#222E35] w-[66%] p-4'>
+        <h1>Hello</h1>
+      </div>
     </div>
   )
 }
