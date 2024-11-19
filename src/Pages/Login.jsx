@@ -1,6 +1,31 @@
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import PulseLoader from "react-spinners/PulseLoader";
+import { loginUser } from "../features/userSlice";
+// import { useSelectro } from 'react-redux'
+// const { status } = useSelector((state => state.user))
 
 export default function Login() {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const { status, error } = useSelector((state) => state.user);
+
+
+    const loginNow = async (e) => {
+        e.preventDefault();
+        const data = {
+            email: e.target.email.value,
+            password: e.target.password.value,
+        };
+        console.log(data);
+        const res = await dispatch(loginUser({ ...data }));
+
+        if (res?.payload?.user) {
+            navigate('/');
+        }
+    }
+
     return (
         <div className="min-h-screen w-full flex justify-center items-center bg-[#111B21]">
             <div className="group mx-auto flex w-full max-w-xl border border-blue-400 bg-white text-blue-400 shadow-lg dark:bg-zinc-900">
@@ -13,7 +38,7 @@ export default function Login() {
                     <span className="absolute -left-5 -top-5 z-10 h-36 w-36 rounded-full bg-blue-800/50"></span>
                 </div>
                 <div className="w-full max-w-sm rounded bg-white p-5 sm:p-8 drop-shadow-lg dark:bg-zinc-900">
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={loginNow}>
                         <h1 className="text-3xl font-semibold tracking-tight">Sign In</h1>
                         <div className="space-y-2">
                             <label htmlFor="nui_email" className="block">
@@ -21,8 +46,9 @@ export default function Login() {
                             </label>
                             <div className="relative">
                                 <input
-                                    id="nui_email"
                                     type="email"
+                                    name="email"
+                                    required
                                     placeholder="Email or Usename"
                                     className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
                                 />
@@ -45,11 +71,11 @@ export default function Login() {
                             </label>
                             <div className="relative">
                                 <input
-                                    id="pass"
-                                    className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
-                                    placeholder="*************"
                                     name="password"
                                     type="password"
+                                    required
+                                    className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
+                                    placeholder="*************"
                                 />
                                 <span className="absolute left-2 top-2">
                                     <svg viewBox="0 0 24 24" fill="none" className="inline-block w-6" xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +88,17 @@ export default function Login() {
                             </div>
                             <h1 className="text-sm">Don't have an account? <Link to="/register" className="underline">Register Now</Link></h1>
                         </div>
-                        <button className="rounded px-5 py-2 ring-1 ring-zinc-400 hover:bg-zinc-400/20 dark:ring-zinc-500">Sign In Now</button>
+                        {/* if we have an error */}
+                        {
+                            error ? (
+                                <div>
+                                    <p className="text-red-400">{error}</p>
+                                </div>
+                            ) : null
+                        }
+                        <button className="rounded px-5 py-2 ring-1 ring-zinc-400 hover:bg-zinc-400/20 dark:ring-zinc-500">
+                            {status == "loading" ? <PulseLoader color="#fff" size={10} /> : "Sign In"}
+                        </button>
                     </form>
                 </div>
             </div>
