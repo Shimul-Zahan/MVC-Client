@@ -1,6 +1,16 @@
 import { Link } from "react-router-dom";
+import PulseLoader from "react-spinners/PulseLoader";
+// import { useSelectro } from 'react-redux'
+// const { status } = useSelector((state => state.user))
 
 export default function Login() {
+
+    const status = "not loading"
+
+    const loginNow = (e) => {
+        e.preventDefault()
+    }
+
     return (
         <div className="min-h-screen w-full flex justify-center items-center bg-[#111B21]">
             <div className="group mx-auto flex w-full max-w-xl border border-blue-400 bg-white text-blue-400 shadow-lg dark:bg-zinc-900">
@@ -13,7 +23,7 @@ export default function Login() {
                     <span className="absolute -left-5 -top-5 z-10 h-36 w-36 rounded-full bg-blue-800/50"></span>
                 </div>
                 <div className="w-full max-w-sm rounded bg-white p-5 sm:p-8 drop-shadow-lg dark:bg-zinc-900">
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={loginNow}>
                         <h1 className="text-3xl font-semibold tracking-tight">Sign In</h1>
                         <div className="space-y-2">
                             <label htmlFor="nui_email" className="block">
@@ -62,7 +72,9 @@ export default function Login() {
                             </div>
                             <h1 className="text-sm">Don't have an account? <Link to="/register" className="underline">Register Now</Link></h1>
                         </div>
-                        <button className="rounded px-5 py-2 ring-1 ring-zinc-400 hover:bg-zinc-400/20 dark:ring-zinc-500">Sign In Now</button>
+                        <button className="rounded px-5 py-2 ring-1 ring-zinc-400 hover:bg-zinc-400/20 dark:ring-zinc-500">
+                            {status == "loading" ? <PulseLoader color="#fff" size={10} /> : "Sign In"}
+                        </button>
                     </form>
                 </div>
             </div>

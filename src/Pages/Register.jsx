@@ -1,6 +1,29 @@
 import { Link } from "react-router-dom";
+import PulseLoader from 'react-spinners/PulseLoader'
+import { useSelector, useDispatch } from 'react-redux';
+// const { status } = useSelector((state => state.user))
 
 export default function Registration() {
+
+    const dispatch = useDispatch();
+    const { status } = useSelector((state) => state.user);
+    console.log(status, "from redux slice");
+
+    // const status = "not loading"
+
+    const registrationNow = (e) => {
+        e.preventDefault()
+        const data = {
+            name: e.target.username.value,
+            email: e.target.email.value,
+            password: e.target.password.value,
+            status: e.target.status.value,
+            image: e.target.image.files[0]
+        }
+
+        console.log(data);
+    }
+
     return (
         <div className="min-h-screen w-full flex justify-center items-center bg-[#111B21]">
             <div className="group mx-auto flex w-full max-w-3xl border border-blue-400 bg-white text-blue-400 shadow-lg dark:bg-zinc-900">
@@ -13,7 +36,7 @@ export default function Registration() {
                     <span className="absolute -left-5 -top-5 z-10 h-36 w-36 rounded-full bg-blue-800/50"></span>
                 </div>
                 <div className="w-full max-w-lg rounded bg-white p-5 sm:p-8 drop-shadow-lg dark:bg-zinc-900">
-                    <form className="space-y-3">
+                    <form className="space-y-3" onSubmit={registrationNow}>
                         <h1 className="text-3xl font-semibold tracking-tight">Sign In</h1>
                         <div className="space-y-2">
                             <label htmlFor="nui_email" className="block">
@@ -23,6 +46,7 @@ export default function Registration() {
                                 <input
                                     id="nui_email"
                                     type="test"
+                                    name="username"
                                     placeholder="Username"
                                     className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
                                 />
@@ -47,6 +71,7 @@ export default function Registration() {
                                 <input
                                     id="nui_email"
                                     type="email"
+                                    name="email"
                                     placeholder="Email"
                                     className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
                                 />
@@ -63,26 +88,50 @@ export default function Registration() {
                                 </span>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <label htmlFor="pass" className="block">
-                                Password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    id="pass"
-                                    className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
-                                    placeholder="*************"
-                                    name="password"
-                                    type="password"
-                                />
-                                <span className="absolute left-2 top-2">
-                                    <svg viewBox="0 0 24 24" fill="none" className="inline-block w-6" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            className="fill-zinc-700 dark:fill-zinc-300"
-                                            d="M20.9098 11.1203V6.73031C20.9098 5.91031 20.2898 4.98031 19.5198 4.67031L13.9498 2.39031C12.6998 1.88031 11.2898 1.88031 10.0398 2.39031L4.46984 4.67031C3.70984 4.98031 3.08984 5.91031 3.08984 6.73031V11.1203C3.08984 16.0103 6.63984 20.5903 11.4898 21.9303C11.8198 22.0203 12.1798 22.0203 12.5098 21.9303C17.3598 20.5903 20.9098 16.0103 20.9098 11.1203ZM12.7498 12.8703V15.5003C12.7498 15.9103 12.4098 16.2503 11.9998 16.2503C11.5898 16.2503 11.2498 15.9103 11.2498 15.5003V12.8703C10.2398 12.5503 9.49984 11.6103 9.49984 10.5003C9.49984 9.12031 10.6198 8.00031 11.9998 8.00031C13.3798 8.00031 14.4998 9.12031 14.4998 10.5003C14.4998 11.6203 13.7598 12.5503 12.7498 12.8703Z"
-                                        ></path>
-                                    </svg>
-                                </span>
+                        <div className="flex  justify-between items-center gap-4">
+                            <div className="space-y-2">
+                                <label htmlFor="pass" className="block">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        id="pass"
+                                        className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
+                                        placeholder="*************"
+                                        name="password"
+                                        type="password"
+                                    />
+                                    <span className="absolute left-2 top-2">
+                                        <svg viewBox="0 0 24 24" fill="none" className="inline-block w-6" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                className="fill-zinc-700 dark:fill-zinc-300"
+                                                d="M20.9098 11.1203V6.73031C20.9098 5.91031 20.2898 4.98031 19.5198 4.67031L13.9498 2.39031C12.6998 1.88031 11.2898 1.88031 10.0398 2.39031L4.46984 4.67031C3.70984 4.98031 3.08984 5.91031 3.08984 6.73031V11.1203C3.08984 16.0103 6.63984 20.5903 11.4898 21.9303C11.8198 22.0203 12.1798 22.0203 12.5098 21.9303C17.3598 20.5903 20.9098 16.0103 20.9098 11.1203ZM12.7498 12.8703V15.5003C12.7498 15.9103 12.4098 16.2503 11.9998 16.2503C11.5898 16.2503 11.2498 15.9103 11.2498 15.5003V12.8703C10.2398 12.5503 9.49984 11.6103 9.49984 10.5003C9.49984 9.12031 10.6198 8.00031 11.9998 8.00031C13.3798 8.00031 14.4998 9.12031 14.4998 10.5003C14.4998 11.6203 13.7598 12.5503 12.7498 12.8703Z"
+                                            ></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="pass" className="block">
+                                    Staus
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        id="pass"
+                                        className="h-10 w-full rounded bg-transparent pl-10 outline-none ring-1 ring-zinc-400 dark:ring-gray-500"
+                                        placeholder="happy or sad or bussy"
+                                        name="status"
+                                        type="text"
+                                    />
+                                    <span className="absolute left-2 top-2">
+                                        <svg viewBox="0 0 24 24" fill="none" className="inline-block w-6" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                className="fill-zinc-700 dark:fill-zinc-300"
+                                                d="M20.9098 11.1203V6.73031C20.9098 5.91031 20.2898 4.98031 19.5198 4.67031L13.9498 2.39031C12.6998 1.88031 11.2898 1.88031 10.0398 2.39031L4.46984 4.67031C3.70984 4.98031 3.08984 5.91031 3.08984 6.73031V11.1203C3.08984 16.0103 6.63984 20.5903 11.4898 21.9303C11.8198 22.0203 12.1798 22.0203 12.5098 21.9303C17.3598 20.5903 20.9098 16.0103 20.9098 11.1203ZM12.7498 12.8703V15.5003C12.7498 15.9103 12.4098 16.2503 11.9998 16.2503C11.5898 16.2503 11.2498 15.9103 11.2498 15.5003V12.8703C10.2398 12.5503 9.49984 11.6103 9.49984 10.5003C9.49984 9.12031 10.6198 8.00031 11.9998 8.00031C13.3798 8.00031 14.4998 9.12031 14.4998 10.5003C14.4998 11.6203 13.7598 12.5503 12.7498 12.8703Z"
+                                            ></path>
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div className="space-y-2">
@@ -93,8 +142,8 @@ export default function Registration() {
                                 <input
                                     id="pass"
                                     className="w-full rounded bg-transparent  outline-none ring-1 ring-zinc-400 dark:ring-gray-500 border-none"
-                                    placeholder="*************"
-                                    name="password"
+                                    // placeholder="Select profile image"
+                                    name="image"
                                     type="file"
                                 />
                                 {/* <span className="absolute left-2 top-2">
@@ -108,7 +157,9 @@ export default function Registration() {
                             </div>
                             <h1 className="text-sm">Already have an account? <Link to="/login" className="underline">Login Now</Link></h1>
                         </div>
-                        <button className="rounded px-5 py-2 ring-1 ring-zinc-400 hover:bg-zinc-400/20 dark:ring-zinc-500">Sign In Now</button>
+                        <button type="submit" className="rounded px-5 py-2 ring-1 ring-zinc-400 hover:bg-zinc-400/20 dark:ring-zinc-500">
+                            {status == "loading" ? <PulseLoader color="#fff" size={10} /> : "Sign Up"}
+                        </button>
                     </form>
                 </div>
             </div>
