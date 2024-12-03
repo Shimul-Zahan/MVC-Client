@@ -7,7 +7,7 @@ const CHAT_ENDPOINT = `${import.meta.env.VITE_API_ENDPOINT}/conversation`;
 const initialState = {
     status: '',
     error: '',
-    conversation: [],
+    conversations: [],
     activeConvo: {},
     notifications: [],
 }
@@ -47,7 +47,7 @@ export const chatSlice = createSlice({
             })
             .addCase(getConvo.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.conversation = action.payload
+                state.conversations = action.payload
             })
             .addCase(getConvo.rejected, (state, action) => {
                 state.status = "failed";
