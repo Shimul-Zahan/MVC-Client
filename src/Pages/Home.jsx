@@ -7,6 +7,7 @@ import { HiStatusOnline } from "react-icons/hi";
 import { CiSettings } from "react-icons/ci";
 import { useDispatch, useSelector } from 'react-redux';
 import { getConvo } from '../features/chatSlice';
+import Chats from '../Chats/Chats';
 
 const Home = () => {
 
@@ -23,7 +24,7 @@ const Home = () => {
   }, [user])
 
   return (
-    <div className='min-h-screen w-full dark:bg-dark_bg dark:text-dark_text flex py-[19px] px-5'>
+    <div className='min-h-screen w-full dark:bg-dark_bg dark:text-dark_text flex'>
       {/* small sidebar */}
       <div className='h-full'>
         <div className='px-3 py-[10px] flex flex-col justify-start items-center gap-5'>
@@ -52,8 +53,9 @@ const Home = () => {
         {/* sidebar */}
         <Sidebar />
       </div>
-      <div className='bg-[#222E35] w-[66%] p-4'>
-        <h1>Hello</h1>
+      {/* message section here */}
+      <div className='bg-[#222E35] w-[66%] '>
+        <Chats />
       </div>
     </div>
   )

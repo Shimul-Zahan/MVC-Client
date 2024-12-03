@@ -3,6 +3,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { IoSearchSharp } from "react-icons/io5";
 import { IoMdArchive } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
+import Conversations from "../../../Conversations/Conversations";
 
 const SidebarHeader = () => {
     return (
@@ -43,17 +44,8 @@ const SidebarHeader = () => {
                 <h1 className="text-[#E9EDEF] text-lg">Archived</h1>
             </div>
             <div className="w-full flex justify-between items-start border-b border-gray-100">
-                <div className="flex justify-start items-center w-full py-2">
-                    <div className="w-[17%]">
-                        <div className="bg-[#6A7175] text-4xl p-2 w-[50px] h-[50px] flex justify-center items-center rounded-full">
-                            <RxAvatar />
-                        </div>
-                    </div>
-                    <div>
-                        <h1>Shimul Zahan</h1>
-                        <h1 className="text-xs">Hello how are you?</h1>
-                    </div>
-                </div>
+                {/* here the conversations */}
+                <Conversations />
                 <div>
                     <h1 className="text-xs py-2">Yesterday</h1>
                 </div>
