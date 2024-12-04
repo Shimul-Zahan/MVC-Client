@@ -31,6 +31,33 @@ export const getConvo = createAsyncThunk(
         }
     })
 
+
+// create methods here
+export const createConversation = createAsyncThunk(
+    "conversation/open_chat",
+    async (values, { rejectWithValue }) => {
+        console.log(values);
+        const { token, receiver_id } = values
+        try {
+            const { data } = await axios.post(
+                CHAT_ENDPOINT,
+                // cause we send this revceiver id as a body
+                { receiver_id },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+            console.log(data);
+            return data
+
+        } catch (error) {
+            console.log(error.response.data.message);
+            return rejectWithValue(error.response.data.message);
+        }
+    })
+
+
 // create slice
 export const chatSlice = createSlice({
     name: 'chat',
@@ -50,6 +77,17 @@ export const chatSlice = createSlice({
                 state.conversations = action.payload
             })
             .addCase(getConvo.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload
+            })
+            .addCase(createConversation.pending, (state, action) => {
+                state.status = "loading";
+            })
+            .addCase(createConversation.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.activeConvo = action.payload
+            })
+            .addCase(createConversation.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload
             })
