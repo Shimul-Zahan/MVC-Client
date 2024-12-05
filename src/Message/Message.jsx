@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Avatar from "../Shared/Avatar";
 import { IoIosVideocam } from "react-icons/io";
 import { IoMdSearch } from "react-icons/io";
@@ -8,40 +8,47 @@ import { PiImagesSquareLight } from "react-icons/pi";
 import { IoMdAdd } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
-import { getConvoMessages } from "../features/chatSlice";
+import { getConvoMessages, sendMessage } from "../features/chatSlice";
+import { RiEmojiStickerLine } from "react-icons/ri";
+import EmojiPickerApp from "./Emoji/EmojiPicker";
+import Attachments from "./Attachments/Attachments";
 
 const MessagePage = ({ name, picture }) => {
-    const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [image, setImage] = useState(null);
     const dispatch = useDispatch()
     const me = true
+    const textReference = useRef()
+    const endRef = useRef()
+    const [showAttachments, setShowAttachments] = useState(false)
+    const [showPicker, setShowPicker] = useState(false)
 
     // get active convo id here
-    const { activeConvo, convo_messages } = useSelector((state, error) => state?.chat)
+    const { activeConvo, messages } = useSelector((state, error) => state?.chat)
     const { user } = useSelector((state, error) => state?.user)
-    console.log(activeConvo?._id, "from message");
-    console.log(convo_messages, "from message");
 
-    const sendMessage = () => {
-        if (input || image) {
-            setMessages([...messages, { text: input, image }]);
-            setInput("");
-            setImage(null);
-        }
-    };
-
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImage(URL.createObjectURL(file));
-        }
-    };
-
+    // values for get the message
     const values = {
         token: user?.access_token,
         convo_id: activeConvo?._id
     }
+
+    // values for send the message
+    const message_values = {
+        message: input,
+        convo_id: activeConvo?._id,
+        files: [],
+        token: user?.access_token,
+    }
+
+    const sendMessages = async () => {
+        if (input || image) {
+            await dispatch(sendMessage(message_values))
+            console.log(input);
+            setInput("");
+            setImage(null);
+        }
+    };
 
     // get message using convo id
     useEffect(() => {
@@ -49,6 +56,15 @@ const MessagePage = ({ name, picture }) => {
             dispatch(getConvoMessages(values))
         }
     }, [activeConvo])
+
+    // for autoscroll
+    const scrollToBottom = () => {
+        endRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages])
+
 
     return (
         <div className="flex flex-col h-screen">
@@ -70,7 +86,7 @@ const MessagePage = ({ name, picture }) => {
 
             {/* Message List */}
             <div className="flex-1 p-4 overflow-y-scroll">
-                {convo_messages && convo_messages?.map((msg, index) => (
+                {messages && messages?.map((msg, index) => (
                     <div
                         key={index}
                         className={`mb-4 flex ${me ? "justify-end" : "justify-start"
@@ -94,27 +110,28 @@ const MessagePage = ({ name, picture }) => {
                         </div>
                     </div>
                 ))}
+                {/* div for automatic scroll */}
+                <div ref={endRef}></div>
             </div>
 
             {/* Input Area */}
             <div className="flex relative items-center p-4 bg-blue-600 text-black border-t text-lg border-gray-300">
-                <IoMdAdd className="text-3xl text-black" />
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="image-upload"
+
+                {/* Emoji picker here */}
+                <EmojiPickerApp
+                    input={input} setInput={setInput} textReference={textReference}
+                    showPicker={showPicker} setShowPicker={setShowPicker}
+                    setShowAttachments={setShowAttachments}
                 />
-                <label
-                    htmlFor="image-upload"
-                    className="cursor-pointer text-blue-600 px-3"
-                >
-                    <div className="flex justify-center items-center gap-2">
-                        <PiImagesSquareLight className="text-3xl text-black" />
-                    </div>
-                </label>
+
+                {/* Attachments here */}
+                <Attachments
+                    showAttachments={showAttachments} setShowAttachments={setShowAttachments}
+                    setShowPicker={setShowPicker}
+                />
+
                 <input
+                    ref={textReference}
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -122,7 +139,7 @@ const MessagePage = ({ name, picture }) => {
                     className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
                 />
                 <button
-                    onClick={sendMessage}
+                    onClick={sendMessages}
                     className="bg-blue-600 text-white px-4 py-2 ml-3 rounded-lg"
                 >
                     <IoSend />

@@ -7,9 +7,10 @@ const Chats = () => {
     const { activeConvo } = useSelector((state, error) => state?.chat)
     console.log(activeConvo);
     const { name, picture } = activeConvo
+
     return (
         <>
-            {activeConvo ? <MessagePage name={name} picture={picture} /> :
+            {activeConvo._id ? <MessagePage name={name} picture={picture} /> :
                 <div className='w-full h-full select-none border-l'>
                     <div className='flex justify-center items-center text-center h-full'>
                         <div>
