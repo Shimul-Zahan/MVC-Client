@@ -5,7 +5,7 @@ import { IoMdArchive } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 import Conversations from "../../../Conversations/Conversations";
 
-const SidebarHeader = () => {
+const SidebarHeader = ({ onlineUsers, usertyping }) => {
     return (
         <div className='flex justify-center flex-col items-center p16'>
             {/* Container */}
@@ -45,7 +45,7 @@ const SidebarHeader = () => {
             </div>
             <div className="w-full flex justify-between items-start border-b border-gray-100">
                 {/* here the conversations */}
-                <Conversations />
+                <Conversations usertyping={usertyping} onlineUsers={onlineUsers} />
                 <div>
                     <h1 className="text-xs py-2">Yesterday</h1>
                 </div>

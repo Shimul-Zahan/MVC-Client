@@ -38,7 +38,7 @@ export const getConvo = createAsyncThunk(
 export const createConversation = createAsyncThunk(
     "conversation/open_chat",
     async (values, { rejectWithValue }) => {
-        console.log(values);
+        // console.log(values);
         const { token, receiver_id } = values
         try {
             const { data } = await axios.post(
@@ -50,7 +50,7 @@ export const createConversation = createAsyncThunk(
                         Authorization: `Bearer ${token}`
                     }
                 })
-            console.log(data);
+            // console.log(data);
             return data
 
         } catch (error) {
@@ -64,7 +64,7 @@ export const createConversation = createAsyncThunk(
 export const getConvoMessages = createAsyncThunk(
     "conversation/messages",
     async (values, { rejectWithValue }) => {
-        console.log(values);
+        // console.log(values);
         const { token, convo_id } = values
         try {
             const { data } = await axios.get(
@@ -74,7 +74,7 @@ export const getConvoMessages = createAsyncThunk(
                         Authorization: `Bearer ${token}`
                     }
                 })
-            console.log(data);
+            // console.log(data);
             return data
 
         } catch (error) {
@@ -88,7 +88,7 @@ export const getConvoMessages = createAsyncThunk(
 export const sendMessage = createAsyncThunk(
     "conversation/send",
     async (values, { rejectWithValue }) => {
-        console.log(values);
+        // console.log(values);
         const { token, message, convo_id, files } = values
         try {
             const { data } = await axios.post(
@@ -103,7 +103,7 @@ export const sendMessage = createAsyncThunk(
                         Authorization: `Bearer ${token}`
                     }
                 })
-            console.log(data);
+            // console.log(data);
             return data
 
         } catch (error) {
@@ -121,6 +121,26 @@ export const chatSlice = createSlice({
     reducers: {
         setActiveConversation: ((state, action) => {
             state.activeConvo = action.payload;
+        }),
+        updateMessageAndConversation: ((state, action) => {
+            //* update message
+            // console.log(state, action, "from chat slice for update message");
+            let convo = state.activeConvo._id
+            // console.log(convo);
+            if (state.activeConvo && state.activeConvo._id === action.payload.conversation._id) {
+                state.messages.push(action.payload);
+            }
+
+            //* update the conversation
+            let conversation = {
+                ...action.payload.conversation,
+                latestMessage: action.payload,
+            }
+            let new_convo = [...state.conversations].filter(
+                (c) => c._id !== conversation._id
+            )
+            new_convo.unshift(conversation)
+            state.conversations = new_convo
         })
     },
     extraReducers(builder) {
@@ -181,7 +201,7 @@ export const chatSlice = createSlice({
     }
 })
 
-export const { setActiveConversation } = chatSlice.actions;
+export const { setActiveConversation, updateMessageAndConversation } = chatSlice.actions;
 
 
 export default chatSlice.reducer
