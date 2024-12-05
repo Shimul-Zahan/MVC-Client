@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Sidebar } from '../Components/Sidebar'
 import { LuMessagesSquare } from "react-icons/lu";
 import { FaRegStopCircle } from "react-icons/fa";
@@ -6,15 +6,37 @@ import { HiMiniUserGroup } from "react-icons/hi2";
 import { HiStatusOnline } from "react-icons/hi";
 import { CiSettings } from "react-icons/ci";
 import { useDispatch, useSelector } from 'react-redux';
-import { getConvo } from '../features/chatSlice';
+import { getConvo, updateMessageAndConversation } from '../features/chatSlice';
 import Chats from '../Chats/Chats';
+import SocketContext from '../Context/SocketContext';
 
 const Home = () => {
-
-  const { user, status } = useSelector((state) => state.user)
-  console.log(user, status);
+  const { user } = useSelector((state) => state.user)
   const dispatch = useDispatch()
+  const socket = useContext(SocketContext);
+  const [onlineUsers, setOnlineUser] = useState([])
+  const [usertyping, setUserTyping] = useState(false)
 
+  // realtime message get
+  useEffect(() => {
+    // listening message
+    socket.on('receive message', (message) => {
+      dispatch(updateMessageAndConversation(message))
+    })
+    // listening typing
+    socket.on('typing', (conversation) => setUserTyping(conversation))
+    socket.on('stop typing', () => setUserTyping(false))
+  }, [])
+
+  // jon userinto the socket.io
+  useEffect(() => {
+    socket.emit('join', user._id)
+    // get all the active users
+    socket.on('get online users', (users) => {
+      console.log(onlineUsers);
+      setOnlineUser(users)
+    })
+  }, [user])
 
   // get conversation
   useEffect(() => {
@@ -51,11 +73,11 @@ const Home = () => {
       {/* container */}
       <div className="container flex h-full py-[10px]">
         {/* sidebar */}
-        <Sidebar />
+        <Sidebar onlineUsers={onlineUsers} usertyping={usertyping} />
       </div>
       {/* message section here */}
       <div className='bg-[#222E35] w-[66%] '>
-        <Chats />
+        <Chats usertyping={usertyping} />
       </div>
     </div>
   )

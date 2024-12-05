@@ -7,7 +7,10 @@ import Login from './Pages/Login.jsx'
 import Register from './Pages/Register.jsx'
 import { Provider } from 'react-redux'
 import { store } from './app/store.js'
+import SocketContext from './Context/SocketContext.js'
+import { io } from "socket.io-client"
 
+const socket = io(import.meta.env.VITE_SERVER_ENDPOINT);
 
 const router = createBrowserRouter([
   {
@@ -32,7 +35,9 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    <RouterProvider router={router} />
-  </Provider>
+  <SocketContext.Provider value={socket}>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </SocketContext.Provider>
 )

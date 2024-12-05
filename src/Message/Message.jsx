@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Avatar from "../Shared/Avatar";
 import { IoIosVideocam } from "react-icons/io";
 import { IoMdSearch } from "react-icons/io";
@@ -12,20 +12,42 @@ import { getConvoMessages, sendMessage } from "../features/chatSlice";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import EmojiPickerApp from "./Emoji/EmojiPicker";
 import Attachments from "./Attachments/Attachments";
+import SocketContext from "../Context/SocketContext";
+import SyncLoader from "react-spinners/SyncLoader";
 
-const MessagePage = ({ name, picture }) => {
+const MessagePage = ({ name, picture, usertyping }) => {
     const [input, setInput] = useState("");
     const [image, setImage] = useState(null);
+    const [typing, setTyping] = useState(false)
     const dispatch = useDispatch()
-    const me = true
     const textReference = useRef()
     const endRef = useRef()
     const [showAttachments, setShowAttachments] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
+    const socket = useContext(SocketContext);
 
     // get active convo id here
     const { activeConvo, messages } = useSelector((state, error) => state?.chat)
     const { user } = useSelector((state, error) => state?.user)
+
+    // handle typing
+    const onchangeTypingHandler = (e) => {
+        setInput(e.target.value)
+        if (!typing) {
+            setTyping(true)
+            socket.emit('typing', activeConvo._id)
+        }
+        let lastTypingTime = new Date().getTime()
+        let timer = 2000;
+        setTimeout(() => {
+            let timeNow = new Date().getTime();
+            let timeDef = timeNow - lastTypingTime
+            if (timeDef >= timer && typing) {
+                socket.emit('stop typing', activeConvo?._id)
+                setTyping(false)
+            }
+        }, timer);
+    }
 
     // values for get the message
     const values = {
@@ -43,8 +65,8 @@ const MessagePage = ({ name, picture }) => {
 
     const sendMessages = async () => {
         if (input || image) {
-            await dispatch(sendMessage(message_values))
-            console.log(input);
+            let res = await dispatch(sendMessage(message_values))
+            socket.emit('send message', res.payload)
             setInput("");
             setImage(null);
         }
@@ -74,7 +96,7 @@ const MessagePage = ({ name, picture }) => {
                     <img src={picture} alt="" className="h-12 w-12 rounded-full" />
                     <div className="">
                         <h1 className="text-lg">{name}</h1>
-                        <h1 className="text-sm">typing</h1>
+                        <h1 className="text-sm">{usertyping ? <SyncLoader color="#fff" size={8} /> : 'Online'}</h1>
                     </div>
                 </div>
                 <div className="flex justify-center items-center gap-5">
@@ -86,31 +108,28 @@ const MessagePage = ({ name, picture }) => {
 
             {/* Message List */}
             <div className="flex-1 p-4 overflow-y-scroll">
-                {messages && messages?.map((msg, index) => (
-                    <div
-                        key={index}
-                        className={`mb-4 flex ${me ? "justify-end" : "justify-start"
-                            }`}
-                    >
+                {messages && messages.map((msg, index) => {
+                    const isMyMessage = msg?.sender?._id === user?._id;
+                    {/* console.log(msg.sender._id)
+                    console.log(msg.user?._id) */}
+                    return (
                         <div
-                            className={`max-w-xs p-3 rounded-lg ${me
-                                ? "bg-blue-500 text-white"
-                                : "bg-gray-200 text-gray-800"
-                                }`}
+                            key={msg._id} // Use unique _id for the key
+                            className={`mb-4 flex ${isMyMessage ? "justify-end" : "justify-start"}`}
                         >
-                            {/* <p className="font-bold">{msg.sender}</p> */}
-                            {msg.image && (
-                                <img
-                                    src={msg.image}
-                                    alt="Uploaded"
-                                    className="mb-2 max-h-40 rounded-lg"
-                                />
-                            )}
-                            {msg.message && <p>{msg.message}</p>}
+                            <div
+                                className={`max-w-xs p-3 rounded-lg ${isMyMessage
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-200 text-gray-800"
+                                    }`}
+                            >
+                                {/* Display text message */}
+                                {msg.message && <p>{msg.message}</p>}
+                            </div>
                         </div>
-                    </div>
-                ))}
-                {/* div for automatic scroll */}
+                    );
+                })}
+                {/* Scroll Anchor */}
                 <div ref={endRef}></div>
             </div>
 
@@ -134,7 +153,7 @@ const MessagePage = ({ name, picture }) => {
                     ref={textReference}
                     type="text"
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={onchangeTypingHandler}
                     placeholder="Type your message..."
                     className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
                 />
