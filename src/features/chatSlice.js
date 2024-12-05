@@ -12,6 +12,7 @@ const initialState = {
     messages: [],
     activeConvo: {},
     notifications: [],
+    files: [],
 }
 
 // create methods here
@@ -119,10 +120,10 @@ export const chatSlice = createSlice({
     name: 'chat',
     initialState,
     reducers: {
-        setActiveConversation: ((state, action) => {
+        setActiveConversation: (state, action) => {
             state.activeConvo = action.payload;
-        }),
-        updateMessageAndConversation: ((state, action) => {
+        },
+        updateMessageAndConversation: (state, action) => {
             //* update message
             // console.log(state, action, "from chat slice for update message");
             let convo = state.activeConvo._id
@@ -141,7 +142,10 @@ export const chatSlice = createSlice({
             )
             new_convo.unshift(conversation)
             state.conversations = new_convo
-        })
+        },
+        addFiles: (state, action) => {
+            state.files = [...state.files, action.payload];
+        }
     },
     extraReducers(builder) {
         builder
@@ -201,7 +205,7 @@ export const chatSlice = createSlice({
     }
 })
 
-export const { setActiveConversation, updateMessageAndConversation } = chatSlice.actions;
+export const { setActiveConversation, updateMessageAndConversation, addFiles } = chatSlice.actions;
 
 
 export default chatSlice.reducer

@@ -7,6 +7,8 @@ import { IoDocuments } from "react-icons/io5";
 import { FaCamera } from "react-icons/fa";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import { FaImages } from "react-icons/fa6";
+import Images from '../Menus/Images';
+import Document from '../Menus/Document';
 
 const Attachments = ({ showAttachments, setShowAttachments, setShowPicker }) => {
 
@@ -28,18 +30,14 @@ const Attachments = ({ showAttachments, setShowAttachments, setShowPicker }) => 
                     <div className='bg-green-500 h-14 w-14 flex justify-center items-center rounded-full'>
                         <IoIosContact className='text-3xl' />
                     </div>
-                    <div className='bg-green-500 h-14 w-14 flex justify-center items-center rounded-full'>
-                        <IoDocuments className='text-3xl' />
-                    </div>
+                    <Document />
                     <div className='bg-green-500 h-14 w-14 flex justify-center items-center rounded-full'>
                         <FaCamera className='text-3xl' />
                     </div>
                     <div className='bg-green-500 h-14 w-14 flex justify-center items-center rounded-full'>
                         <RiEmojiStickerLine className='text-3xl' />
                     </div>
-                    <div className='bg-green-500 h-14 w-14 flex justify-center items-center rounded-full'>
-                        <FaImages className='text-3xl' />
-                    </div>
+                    <Images />
                 </div>
             }
         </div>
