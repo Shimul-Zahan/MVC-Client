@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearFiles } from "../../features/chatSlice";
 import { useState } from "react";
 import { formatFileType } from "../../Utils/FormatFileType";
+import { uploadFiles } from "../../Utils/uploadFiles";
 
 const FilesPreview = () => {
 
@@ -40,7 +41,10 @@ const FilesPreview = () => {
         setInput(e.target.value)
     }
 
-    console.log(input, 'from files');
+    const handleSendFileAndMessage = () => {
+        const res = uploadFiles(files)
+        console.log(res, 'from preview files here');
+    }
 
 
     return (
@@ -108,7 +112,8 @@ const FilesPreview = () => {
                     <div className=" border-gray-700 border-2 rounded-lg cursor-pointer h-16 w-16 flex justify-center items-center">
                         <MdAddBox className="text-5xl" />
                     </div>
-                    <button className="cursor-pointer h-16 w-16 flex justify-center items-center absolute right-0">
+                    <button onClick={handleSendFileAndMessage}
+                        className="cursor-pointer h-16 w-16 flex justify-center items-center absolute right-0">
                         <div className="relative bg-green-500 w-full h-full rounded-full flex justify-center items-center">
                             <IoSend className="text-4xl" />
                             <p className="absolute top-0 right-0 h-6 w-6 text-black text-sm flex justify-center items-center bg-white rounded-full">{files && files.length}</p>
