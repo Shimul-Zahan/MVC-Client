@@ -1,12 +1,14 @@
 import React, { useRef } from 'react'
 import { IoDocuments } from 'react-icons/io5'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addFiles } from '../../features/chatSlice'
 
 const Document = () => {
 
     const inputRef = useRef(null)
     const dispatch = useDispatch()
+    const { files } = useSelector((state) => state.chat)
+    console.log(files, "files here");
 
     // handle the documents
     const documentHandler = async (e) => {
@@ -15,12 +17,13 @@ const Document = () => {
             if (
                 file.type !== 'application/pdf' &&
                 file.type !== 'text/plain' &&
-                file.type !== 'appliaction/msword' &&
-                file.type !== 'appliaction/zip' &&
-                file.type !== 'appliaction/vnd.rar' &&
-                file.type !== 'appliaction/vnd.excel' &&
-                file.type !== 'appliaction/vnd.ms-powerpoint'&&
-                file.type !== 'audio/mpeg'&&
+                file.type !== 'application/msword' &&
+                file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
+                file.type !== 'application/zip' &&
+                file.type !== 'application/vnd.rar' &&
+                file.type !== 'application/vnd.ms-excel' &&
+                file.type !== 'application/vnd.ms-powerpoint' &&
+                file.type !== 'audio/mpeg' &&
                 file.type !== 'audio/wav'
             ) {
                 files = files.filter((item) => item.name !== file.name)
@@ -51,8 +54,9 @@ const Document = () => {
             <input
                 type="file"
                 hidden
+                multiple
                 ref={inputRef}
-                accept='application/*, text/plain'
+                accept='application/pdf,text/plain,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/zip,application/vnd.rar,application/vnd.ms-excel,application/vnd.ms-powerpoint,audio/mpeg,audio/wav'
                 onChange={documentHandler}
             />
         </div>

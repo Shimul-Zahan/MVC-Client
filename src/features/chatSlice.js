@@ -145,6 +145,9 @@ export const chatSlice = createSlice({
         },
         addFiles: (state, action) => {
             state.files = [...state.files, action.payload];
+        },
+        clearFiles: (state, action) => {
+            state.files = [];
         }
     },
     extraReducers(builder) {
@@ -205,7 +208,7 @@ export const chatSlice = createSlice({
     }
 })
 
-export const { setActiveConversation, updateMessageAndConversation, addFiles } = chatSlice.actions;
+export const { setActiveConversation, updateMessageAndConversation, addFiles, clearFiles } = chatSlice.actions;
 
 
 export default chatSlice.reducer
