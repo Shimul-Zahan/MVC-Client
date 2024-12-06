@@ -18,7 +18,7 @@ const Images = () => {
                 file.type !== 'image/png' &&
                 file.type !== 'image/jpeg' &&
                 file.type !== 'image/webp' &&
-                file.type !== 'image/gif'&&
+                file.type !== 'image/gif' &&
                 file.type !== 'video/mp4' &&
                 file.type !== 'image/mpeg' &&
                 file.type !== 'image/webm' &&
@@ -54,6 +54,7 @@ const Images = () => {
             <input
                 type="file"
                 hidden
+                multiple
                 ref={inputRef}
                 accept='image/png,image/jpg, image/jpeg, image/webp, image/gif, video/mp4, video/mpeg'
                 onChange={imageHandler}

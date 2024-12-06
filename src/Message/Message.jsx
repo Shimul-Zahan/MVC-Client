@@ -14,6 +14,7 @@ import EmojiPickerApp from "./Emoji/EmojiPicker";
 import Attachments from "./Attachments/Attachments";
 import SocketContext from "../Context/SocketContext";
 import SyncLoader from "react-spinners/SyncLoader";
+import FilesPreview from "../Preview/Files/FilesPreview";
 
 const MessagePage = ({ name, picture, usertyping }) => {
     const [input, setInput] = useState("");
@@ -27,7 +28,7 @@ const MessagePage = ({ name, picture, usertyping }) => {
     const socket = useContext(SocketContext);
 
     // get active convo id here
-    const { activeConvo, messages } = useSelector((state, error) => state?.chat)
+    const { activeConvo, messages, files } = useSelector((state, error) => state?.chat)
     const { user } = useSelector((state, error) => state?.user)
 
     // handle typing
@@ -81,7 +82,12 @@ const MessagePage = ({ name, picture, usertyping }) => {
 
     // for autoscroll
     const scrollToBottom = () => {
-        endRef.current.scrollIntoView({ behavior: "smooth" });
+        // endRef.current.scrollIntoView({ behavior: "smooth" });
+        if (endRef.current) {
+            endRef.current.scrollIntoView({ behavior: "smooth" });
+        } else {
+            console.error("endRef is null; check its placement in the DOM.");
+        }
     }
     useEffect(() => {
         scrollToBottom()
@@ -107,63 +113,69 @@ const MessagePage = ({ name, picture, usertyping }) => {
             </div>
 
             {/* Message List */}
-            <div className="flex-1 p-4 overflow-y-scroll">
-                {messages && messages.map((msg, index) => {
-                    const isMyMessage = msg?.sender?._id === user?._id;
-                    {/* console.log(msg.sender._id)
+            {/* Preview files here */}
+            {
+                files.length > 0 ?
+                    <FilesPreview />
+                    :
+                    <>
+                        <div className="flex-1 p-4 overflow-y-scroll">
+                            {messages && messages.map((msg, index) => {
+                                const isMyMessage = msg?.sender?._id === user?._id;
+                                {/* console.log(msg.sender._id)
                     console.log(msg.user?._id) */}
-                    return (
-                        <div
-                            key={msg._id} // Use unique _id for the key
-                            className={`mb-4 flex ${isMyMessage ? "justify-end" : "justify-start"}`}
-                        >
-                            <div
-                                className={`max-w-xs p-3 rounded-lg ${isMyMessage
-                                    ? "bg-blue-500 text-white"
-                                    : "bg-gray-200 text-gray-800"
-                                    }`}
-                            >
-                                {/* Display text message */}
-                                {msg.message && <p>{msg.message}</p>}
-                            </div>
+                                return (
+                                    <div
+                                        key={msg._id} // Use unique _id for the key
+                                        className={`mb-4 flex ${isMyMessage ? "justify-end" : "justify-start"}`}
+                                    >
+                                        <div
+                                            className={`max-w-xs p-3 rounded-lg ${isMyMessage
+                                                ? "bg-blue-500 text-white"
+                                                : "bg-gray-200 text-gray-800"
+                                                }`}
+                                        >
+                                            {/* Display text message */}
+                                            {msg.message && <p>{msg.message}</p>}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {/* Scroll Anchor */}
+                            <div ref={endRef}></div>
                         </div>
-                    );
-                })}
-                {/* Scroll Anchor */}
-                <div ref={endRef}></div>
-            </div>
+                        <div className="flex relative items-center p-4 bg-blue-600 text-black border-t text-lg border-gray-300">
 
-            {/* Input Area */}
-            <div className="flex relative items-center p-4 bg-blue-600 text-black border-t text-lg border-gray-300">
+                            {/* Emoji picker here */}
+                            <EmojiPickerApp
+                                input={input} setInput={setInput} textReference={textReference}
+                                showPicker={showPicker} setShowPicker={setShowPicker}
+                                setShowAttachments={setShowAttachments}
+                            />
 
-                {/* Emoji picker here */}
-                <EmojiPickerApp
-                    input={input} setInput={setInput} textReference={textReference}
-                    showPicker={showPicker} setShowPicker={setShowPicker}
-                    setShowAttachments={setShowAttachments}
-                />
+                            {/* Attachments here */}
+                            <Attachments
+                                showAttachments={showAttachments} setShowAttachments={setShowAttachments}
+                                setShowPicker={setShowPicker}
+                            />
 
-                {/* Attachments here */}
-                <Attachments
-                    showAttachments={showAttachments} setShowAttachments={setShowAttachments}
-                    setShowPicker={setShowPicker}
-                />
-
-                <input
-                    ref={textReference}
-                    type="text"
-                    value={input}
-                    onChange={onchangeTypingHandler}
-                    placeholder="Type your message..."
-                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
-                />
-                <button
-                    onClick={sendMessages}
-                    className="bg-blue-600 text-white px-4 py-2 ml-3 rounded-lg"
-                >
-                    <IoSend />
-                </button>
-            </div>
+                            <input
+                                ref={textReference}
+                                type="text"
+                                value={input}
+                                onChange={onchangeTypingHandler}
+                                placeholder="Type your message..."
+                                className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
+                            />
+                            <button
+                                onClick={sendMessages}
+                                className="bg-blue-600 text-white px-4 py-2 ml-3 rounded-lg"
+                            >
+                                <IoSend />
+                            </button>
+                        </div>
+                    </>
+            }
         </div>
     );
 };

@@ -12,6 +12,8 @@ import SocketContext from '../Context/SocketContext';
 
 const Home = () => {
   const { user } = useSelector((state) => state.user)
+  const { files } = useSelector((state) => state.chat)
+  console.log(files);
   const dispatch = useDispatch()
   const socket = useContext(SocketContext);
   const [onlineUsers, setOnlineUser] = useState([])
