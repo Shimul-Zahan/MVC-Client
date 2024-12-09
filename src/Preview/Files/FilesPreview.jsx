@@ -9,16 +9,19 @@ import { MdAudioFile } from "react-icons/md";
 import { FaImage } from "react-icons/fa";
 import { TbFileUnknown } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { clearFiles } from "../../features/chatSlice";
-import { useState } from "react";
+import { clearFiles, sendMessage } from "../../features/chatSlice";
+import { useContext, useState } from "react";
 import { formatFileType } from "../../Utils/FormatFileType";
 import { uploadFiles } from "../../Utils/uploadFiles";
+import SocketContext from "../../Context/SocketContext";
 
 const FilesPreview = () => {
 
+    const socket = useContext(SocketContext)
     const dispatch = useDispatch()
     const [input, setInput] = useState("");
-    const { files } = useSelector((state) => state.chat)
+    const { files, activeConvo } = useSelector((state) => state.chat)
+    const { user } = useSelector((state) => state.user)
     const [selectedFileIndex, setSelectedFileIndex] = useState(0);
 
     // clear files
@@ -41,9 +44,22 @@ const FilesPreview = () => {
         setInput(e.target.value)
     }
 
-    const handleSendFileAndMessage = () => {
-        const res = uploadFiles(files)
-        console.log(res, 'from preview files here');
+    const handleSendFileAndMessage = async () => {
+        const upload_files = await uploadFiles(files)
+        const values = {
+            token: user?.access_token,
+            convo_id: activeConvo?._id,
+            message: input,
+            files: upload_files.length > 0 ? upload_files : [],
+        }
+
+        const res = await dispatch(sendMessage(values))
+        // console.log(res.payload, "successfull add to db");
+        socket.emit('send message', res.payload)
+
+        // Clear input and files after successful send
+        setInput("");
+        dispatch(clearFiles());
     }
 
 

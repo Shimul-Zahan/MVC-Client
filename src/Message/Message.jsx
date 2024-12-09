@@ -80,19 +80,22 @@ const MessagePage = ({ name, picture, usertyping }) => {
         }
     }, [activeConvo])
 
+    useEffect(() => {
+        if (messages?.length > 0) {
+            scrollToBottom();
+        }
+    }, [messages, files]);
+
     // for autoscroll
     const scrollToBottom = () => {
-        // endRef.current.scrollIntoView({ behavior: "smooth" });
         if (endRef.current) {
             endRef.current.scrollIntoView({ behavior: "smooth" });
         } else {
             console.error("endRef is null; check its placement in the DOM.");
         }
     }
-    useEffect(() => {
-        scrollToBottom()
-    }, [messages])
 
+    console.log(files, "number of files");
 
     return (
         <div className="flex flex-col h-screen">
@@ -115,18 +118,17 @@ const MessagePage = ({ name, picture, usertyping }) => {
             {/* Message List */}
             {/* Preview files here */}
             {
-                files.length > 0 ?
+                files.length > 0 ? (
                     <FilesPreview />
+                )
                     :
                     <>
                         <div className="flex-1 p-4 overflow-y-scroll">
                             {messages && messages.map((msg, index) => {
                                 const isMyMessage = msg?.sender?._id === user?._id;
-                                {/* console.log(msg.sender._id)
-                    console.log(msg.user?._id) */}
                                 return (
                                     <div
-                                        key={msg._id} // Use unique _id for the key
+                                        key={msg._id}
                                         className={`mb-4 flex ${isMyMessage ? "justify-end" : "justify-start"}`}
                                     >
                                         <div

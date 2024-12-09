@@ -91,6 +91,7 @@ export const sendMessage = createAsyncThunk(
     async (values, { rejectWithValue }) => {
         // console.log(values);
         const { token, message, convo_id, files } = values
+        console.log(token, message, convo_id, files);
         try {
             const { data } = await axios.post(
                 MESSAGE_ENDPOINT,
@@ -104,8 +105,8 @@ export const sendMessage = createAsyncThunk(
                         Authorization: `Bearer ${token}`
                     }
                 })
-            // console.log(data);
-            return data
+            console.log("API response data:", data);
+            return data;
 
         } catch (error) {
             console.log(error.response.data.message);
@@ -137,7 +138,7 @@ export const chatSlice = createSlice({
                 ...action.payload.conversation,
                 latestMessage: action.payload,
             }
-            let new_convo = [...state.conversations].filter(
+            let new_convo = [...state.conversations || []].filter(
                 (c) => c._id !== conversation._id
             )
             new_convo.unshift(conversation)
