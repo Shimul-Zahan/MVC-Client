@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Sidebar } from '../Components/Sidebar'
 import { LuMessagesSquare } from "react-icons/lu";
 import { FaRegStopCircle } from "react-icons/fa";
@@ -28,8 +28,11 @@ const Home = () => {
 
   // for all types of callings
   const [call, setCall] = useState(callData)
+  const [callStreaming, setCallStreaming] = useState()
   const { receiveingCall, callEnded } = call;
   const [callAccepted, setCallAccepted] = useState(false)
+  const myVideoRef = useRef()
+  const userVideoRef = useRef()
 
   // realtime message get
   useEffect(() => {
@@ -99,7 +102,14 @@ const Home = () => {
       {/* for calling */}
 
       <div>
-        <Call call={call} setCall={setCall} callAccepted={callAccepted} />
+        <Call
+          call={call}
+          setCall={setCall}
+          callAccepted={callAccepted}
+          userVideoRef={userVideoRef}
+          myVideoRef={myVideoRef}
+          callStreaming={callStreaming} 
+          />
       </div>
     </div>
   )
