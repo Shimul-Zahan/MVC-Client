@@ -22,7 +22,10 @@ export const uploadFiles = async (files) => {
 
             if (res.ok) {
                 const data = await res.json();
-                uploaded.push({ file: data, type });
+                uploaded.push({
+                    file: data,
+                    type
+                });
             } else {
                 console.error(`Failed to upload file: ${res.statusText}`);
             }
