@@ -4,7 +4,7 @@ import { MdOutlineGroupAdd } from "react-icons/md";
 
 const CallAreaHeader = () => {
     return (
-        <div className='text-sm text-white flex justify-between items-center'>
+        <div className='text-sm text-white flex justify-between items-center p-3'>
             <button>
                 <IoCaretBackSharp className='text-2xl' />
             </button>

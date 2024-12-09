@@ -4,12 +4,21 @@ import { FcVideoCall } from "react-icons/fc";
 import { FcCancel } from "react-icons/fc";
 import CallAreaHeader from './Components/CallAreaHeader';
 import CallArea from './Components/callArea';
+import CallActions from './Components/CallActions';
 
-const Call = ({ call, setCall, callAccepted }) => {
 
+const Call = ({
+    call,
+    setCall,
+    callAccepted,
+    userVideoRef,
+    myVideoRef,
+    callStreaming
+}) => {
     const { receiveingCall, callEnded } = call;
     let intervalId;
     const [timer, setTimer] = useState(0)
+    const [showActions, setShowActions] = useState(false)
 
 
     const handleTimer = () => {
@@ -67,13 +76,34 @@ const Call = ({ call, setCall, callAccepted }) => {
             <div>
                 <div className='absolute top-0 left-0 w-full h-screen flex justify-center items-center'>
                     {/* container */}
-                    <div className='border h-[80%] w-[25%] bg-gray-800 rounded-xl p-3'>
+                    <div onMouseOver={() => setShowActions(true)}
+                        onMouseOut={() => setShowActions(false)}
+                        className='border relative h-[80%] w-[25%] bg-red-500 rounded-xl'>
                         {/* call header */}
                         <CallAreaHeader />
                         {/* Call area */}
-                        <div className='pt-5'>
+                        <div className='pt-5 p-3'>
                             <CallArea />
                         </div>
+                        {
+                            showActions && <div className='absolute bottom-0 w-full'>
+                                <CallActions />
+                            </div>
+                        }
+                        {/* video stream here */}
+                        <div>
+                            {/* user video */}
+                            <div>
+                                {/* <video src={userVideo} playsInline muted autoPlay></video> */}
+                            </div>
+                        </div>
+                        <div>
+                            {/* My video */}
+                            <div className={`bg-blue-500 h-32 w-24 absolute right-0 rounded-lg ${showActions ? ' bottom-[100px]' : 'bottom-0'}`}>
+                                {/* <video src={myVideo} playsInline muted autoPlay></video> */}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
