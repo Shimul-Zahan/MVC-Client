@@ -7,7 +7,6 @@ import { FaMicrophone } from "react-icons/fa";
 import { PiImagesSquareLight } from "react-icons/pi";
 import { IoMdAdd } from "react-icons/io";
 import { IoSend } from "react-icons/io5";
-import { useSelector, useDispatch } from "react-redux";
 import { getConvoMessages, sendMessage } from "../features/chatSlice";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import EmojiPickerApp from "./Emoji/EmojiPicker";
@@ -15,6 +14,12 @@ import Attachments from "./Attachments/Attachments";
 import SocketContext from "../Context/SocketContext";
 import SyncLoader from "react-spinners/SyncLoader";
 import FilesPreview from "../Preview/Files/FilesPreview";
+import { FaFilePdf } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
+import { FaFileDownload } from "react-icons/fa";
+import { FaFileWord } from "react-icons/fa";
+
+
 
 const MessagePage = ({ name, picture, usertyping }) => {
     const [input, setInput] = useState("");
@@ -95,7 +100,70 @@ const MessagePage = ({ name, picture, usertyping }) => {
         }
     }
 
-    console.log(files, "number of files");
+    // Function to render file previews
+    const renderFilePreview = (file) => {
+
+        if (file?.type?.includes("image")) {
+            return <img src={file?.file?.secure_url} alt="Image" className="max-w-xs max-h-60 object-cover" />
+        }
+        if (file?.type?.includes("video")) {
+            return (
+                <video
+                    controls
+                    className="rounded-sm w-full"
+                    src={file?.file?.secure_url}
+                >
+                    Your browser does not support the video tag.
+                </video>
+            );
+        }
+
+        // Handling document files (PDF, DOCX, etc.)
+        if (file?.type?.includes("pdf")) {
+            return (
+                <div className="border py-1 px-2 rounded-lg flex justify-between items-center w-full gap-10">
+                    <div className="flex justify-start items-center gap-4">
+                        <FaFilePdf className="text-3xl font-bold text-red-500" />
+                        <div>
+                            <h1 className="text-sm">{file?.file?.display_name}</h1>
+                            <div className="flex justify-start items-center gap-1">
+                                <h1 className="text-xs">{Math.floor(file?.file?.bytes / 1024 / 1024)}MB</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a href={file?.file?.secure_url} download target="_blank">
+                            <FaFileDownload className="text-3xl font-bold" />
+                        </a>
+                    </div>
+                </div>
+            )
+        }
+        if (file?.type?.includes("vnd.openxmlformats-officedocument.wordprocessingml.document"
+)) {
+            return (
+                <div className="border py-1 px-2 rounded-lg flex justify-between items-center w-full gap-10">
+                    <div className="flex justify-start items-center gap-4">
+                        <FaFileWord className="text-3xl font-bold text-black" />
+                        <div>
+                            <h1 className="text-sm">{file?.file?.display_name}</h1>
+                            <div className="flex justify-start items-center gap-1">
+                                <h1 className="text-xs">{Math.floor(file?.file?.bytes / 1024 / 1024)}MB</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a href={file?.file?.secure_url} download target="_blank">
+                            <FaFileDownload className="text-3xl font-bold" />
+                        </a>
+                    </div>
+                </div>
+            )
+        }
+
+        return null;
+    };
+
 
     return (
         <div className="flex flex-col h-screen">
@@ -138,7 +206,15 @@ const MessagePage = ({ name, picture, usertyping }) => {
                                                 }`}
                                         >
                                             {/* Display text message */}
-                                            {msg.message && <p>{msg.message}</p>}
+                                            {(msg.message || "").length > 0 && <p>{msg.message}</p>}
+
+                                            {/* Render image or video preview */}
+                                            {msg?.files && msg?.files.length > 0 && msg?.files.map((file, idx) => (
+                                                <div key={idx} className="mt-2">
+                                                    {renderFilePreview(file)}
+                                                </div>
+                                            ))}
+
                                         </div>
                                     </div>
                                 );
