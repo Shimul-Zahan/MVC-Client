@@ -9,11 +9,12 @@ import { MdAudioFile } from "react-icons/md";
 import { FaImage } from "react-icons/fa";
 import { TbFileUnknown } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { clearFiles, sendMessage } from "../../features/chatSlice";
+import { clearFiles, removeFileFromFiles, sendMessage } from "../../features/chatSlice";
 import { useContext, useState } from "react";
 import { formatFileType } from "../../Utils/FormatFileType";
 import { uploadFiles } from "../../Utils/uploadFiles";
 import SocketContext from "../../Context/SocketContext";
+import { IoClose } from "react-icons/io5";
 
 const FilesPreview = () => {
 
@@ -45,6 +46,7 @@ const FilesPreview = () => {
     }
 
     const handleSendFileAndMessage = async () => {
+        console.log(files, 'files from handle and send function');
         const upload_files = await uploadFiles(files)
         const values = {
             token: user?.access_token,
@@ -52,14 +54,19 @@ const FilesPreview = () => {
             message: input,
             files: upload_files.length > 0 ? upload_files : [],
         }
-
+        console.log(values);
         const res = await dispatch(sendMessage(values))
-        // console.log(res.payload, "successfull add to db");
+        console.log(res.payload, "successfull add to db");
         socket.emit('send message', res.payload)
 
         // Clear input and files after successful send
         setInput("");
         dispatch(clearFiles());
+    }
+
+
+    const removeHandleFile = (index) => {
+        dispatch(removeFileFromFiles(index))
     }
 
 
@@ -82,10 +89,20 @@ const FilesPreview = () => {
                     <div className="w-full flex justify-center items-center py-5">
                         {files[0]?.file?.name}
                     </div>
-                    {/* File preview */}
+
+                    {/* // File preview section */}
                     {files[0]?.file?.type?.startsWith("image") ? (
                         <div className="flex justify-center items-center h-[300px] w-full overflow-hidden">
                             <img src={files[selectedFileIndex]?.fileData} alt="" className="h-full w-[400px]" />
+                        </div>
+                    ) : files[0]?.file?.type?.startsWith("video") ? (
+                        <div className="w-full h-[300px] flex justify-center items-center">
+                            <video
+                                controls
+                                className="h-full w-[400px]"
+                                src={files[selectedFileIndex]?.fileData}
+                                type={files[selectedFileIndex]?.file?.type}
+                            />
                         </div>
                     ) : (
                         <div className="w-full h-[300px] flex justify-center items-center">
@@ -99,6 +116,7 @@ const FilesPreview = () => {
                             </div>
                         </div>
                     )}
+
 
                     {/* input here */}
                     <div className="flex justify-center items-center py-5">
@@ -115,13 +133,17 @@ const FilesPreview = () => {
                             <div
                                 onClick={() => setSelectedFileIndex(index)}
                                 key={index}
-                                className="border-gray-700 p-1 border-2 rounded-lg cursor-pointer h-16 w-16 flex justify-center items-center"
+                                className="border-gray-700 p-1 border-2 rounded-lg cursor-pointer h-16 w-16 flex justify-center items-center relative group"
                             >
                                 {file?.file?.type?.startsWith("image") ? (
                                     <img src={file?.fileData} alt="" className="h-full w-full object-cover" />
                                 ) : (
                                     getFileIcon(file?.file?.type)
                                 )}
+                                <button onClick={() => removeHandleFile(index)}
+                                    className="hidden group-hover:block absolute right-0 top-0 bg-white text-black rounded-full">
+                                    <IoClose className="text-sm" />
+                                </button>
                             </div>
                         ))}
                     {/* add button here */}
