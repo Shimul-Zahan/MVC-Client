@@ -13,7 +13,7 @@ const Call = ({
     callAccepted,
     userVideoRef,
     myVideoRef,
-    callStreaming
+    callStreaming,
 }) => {
     const { receiveingCall, callEnded } = call;
     let intervalId;
@@ -45,9 +45,9 @@ const Call = ({
         <>
             {
                 receiveingCall && !callAccepted &&
-                <div className='absolute top-0 left-0 w-full h-screen flex justify-center items-center'>
+                <div className='absolute z-10 top-0 left-0 flex justify-center items-center'>
                     {/* container */}
-                    <div className='border h-40 w-[35%] bg-gray-50 rounded-lg p-4 flex justify-between items-center'>
+                    <div className='border h-40 w-full bg-gray-50 rounded-lg p-4 flex justify-between items-center'>
                         {/* call infos */}
                         <div className='flex items-center gap-5'>
                             <img src="https://wallpapers.com/images/high/funny-profile-picture-r8l2gifvpdd0kt25.webp" alt="" className='w- h-32 w-32 rounded-full' />
@@ -73,34 +73,41 @@ const Call = ({
             }
 
             {/* Call body */}
-            <div>
-                <div className='absolute top-0 left-0 w-full h-screen flex justify-center items-center'>
+            <div className=''>
+                <div className='absolute top-0 left-0 bg-black h-screen flex justify-center items-center'>
                     {/* container */}
                     <div onMouseOver={() => setShowActions(true)}
                         onMouseOut={() => setShowActions(false)}
-                        className='border relative h-[80%] w-[25%] bg-red-500 rounded-xl'>
-                        {/* call header */}
-                        <CallAreaHeader />
-                        {/* Call area */}
-                        <div className='pt-5 p-3'>
-                            <CallArea />
-                        </div>
-                        {
-                            showActions && <div className='absolute bottom-0 w-full'>
-                                <CallActions />
+                        className='border relative h-[80%] w-[400px] bg-red-500 rounded-xl'>
+                        <div className=''>
+                            {/* call header */}
+                            <CallAreaHeader />
+                            {/* Call area */}
+                            <div className='pt-5 p-3'>
+                                <CallArea />
                             </div>
-                        }
-                        {/* video stream here */}
-                        <div>
-                            {/* user video */}
+                            {
+                                showActions && <div className='absolute bottom-0 w-full'>
+                                    <CallActions />
+                                </div>
+                            }
+                            {/* video stream here */}
                             <div>
-                                {/* <video src={userVideo} playsInline muted autoPlay></video> */}
+                                {/* user video */}
+                                <div className=''>
+                                    <video ref={userVideoRef}
+                                        playsInline
+                                        muted
+                                        autoPlay
+                                        className='h-full w-full'
+                                    ></video>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            {/* My video */}
-                            <div className={`bg-blue-500 h-32 w-24 absolute right-0 rounded-lg ${showActions ? ' bottom-[100px]' : 'bottom-0'}`}>
-                                {/* <video src={myVideo} playsInline muted autoPlay></video> */}
+                            <div>
+                                {/* My video */}
+                                <div className={`bg-blue-500 h-32 w-24 absolute right-0 rounded-lg ${showActions ? ' bottom-[100px]' : 'bottom-0'}`}>
+                                    <video ref={myVideoRef} playsInline muted autoPlay></video>
+                                </div>
                             </div>
                         </div>
 

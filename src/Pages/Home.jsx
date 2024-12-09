@@ -10,17 +10,23 @@ import { getConvo, updateMessageAndConversation } from '../features/chatSlice';
 import Chats from '../Chats/Chats';
 import SocketContext from '../Context/SocketContext';
 import Call from '../Call/Call';
+import { getConversationId, getConversationName, getConversationPicture } from '../Utils/chat';
+import Peer from 'simple-peer/simplepeer.min.js';
+
 
 const callData = {
+  socketId: '',
   receiveingCall: false,
   callEnded: false,
+  name: '',
+  picture: '',
 }
 
 
 const Home = () => {
   const { user } = useSelector((state) => state.user)
-  const { files } = useSelector((state) => state.chat)
-  console.log(files);
+  const { files, activeConvo } = useSelector((state) => state.chat)
+  // console.log(files);
   const dispatch = useDispatch()
   const socket = useContext(SocketContext);
   const [onlineUsers, setOnlineUser] = useState([])
@@ -29,7 +35,7 @@ const Home = () => {
   // for all types of callings
   const [call, setCall] = useState(callData)
   const [callStreaming, setCallStreaming] = useState()
-  const { receiveingCall, callEnded } = call;
+  const { receiveingCall, callEnded, socketId } = call;
   const [callAccepted, setCallAccepted] = useState(false)
   const myVideoRef = useRef()
   const userVideoRef = useRef()
@@ -61,6 +67,73 @@ const Home = () => {
       dispatch(getConvo(user.access_token))
     }
   }, [user])
+
+
+  // --------------------- call useeffecr -----------------
+
+  const setupMedia = () => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        console.log(stream, "steaming");
+        setCallStreaming(stream)
+      })
+  }
+
+  useEffect(() => {
+    setupMedia()
+    socket.on('setup socket', (id) => {
+      setCall({ ...call, socketId: id })
+    })
+
+    // listen socket for calling
+    socket.on('call user', (data) => {
+      setCall({
+        ...call,
+        // who call me
+        socketId: data.from,
+        name: data.name,
+        image: data.image,
+        signal: data.signal,
+        // now i am receiveing the call
+        receiveingCall: true,
+      })
+    })
+  }, [])
+
+  // --------------call user function is here --------------
+  const callUser = () => {
+    enableMedia()
+    // set a receiver caller details
+    setCall({
+      ...call,
+      name: getConversationName(user, activeConvo.users),
+      id: getConversationId(user, activeConvo.users),
+      picture: getConversationPicture(user, activeConvo.users),
+    })
+
+    const peer = new Peer({
+      // who start call is called initiator
+      initiator: true,
+      trickle: false,
+      stream: callStreaming,
+    })
+    // now send this peer signal to socket
+    peer.on('signal', (data) => {
+      socket.emit('call user', {
+        userToCall: getConversationId(user, activeConvo.users),
+        signal: data,
+        from: socketId,
+        name: user.name,
+        image: user.image
+      })
+    })
+  }
+
+  const enableMedia = () => {
+    // enable my video and audio
+    myVideoRef.current.srcObject = callStreaming
+  }
+
 
   return (
     <div className='relative'>
@@ -95,7 +168,7 @@ const Home = () => {
         </div>
         {/* message section here */}
         <div className='bg-[#222E35] w-[66%] '>
-          <Chats usertyping={usertyping} />
+          <Chats usertyping={usertyping} callUser={callUser} />
         </div>
       </div>
 
@@ -108,8 +181,8 @@ const Home = () => {
           callAccepted={callAccepted}
           userVideoRef={userVideoRef}
           myVideoRef={myVideoRef}
-          callStreaming={callStreaming} 
-          />
+          callStreaming={callStreaming}
+        />
       </div>
     </div>
   )

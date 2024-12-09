@@ -21,7 +21,7 @@ import { FaFileWord } from "react-icons/fa";
 
 
 
-const MessagePage = ({ name, picture, usertyping }) => {
+const MessagePage = ({ name, picture, usertyping, callUser }) => {
     const [input, setInput] = useState("");
     const [image, setImage] = useState(null);
     const [typing, setTyping] = useState(false)
@@ -140,7 +140,7 @@ const MessagePage = ({ name, picture, usertyping }) => {
             )
         }
         if (file?.type?.includes("vnd.openxmlformats-officedocument.wordprocessingml.document"
-)) {
+        )) {
             return (
                 <div className="border py-1 px-2 rounded-lg flex justify-between items-center w-full gap-10">
                     <div className="flex justify-start items-center gap-4">
@@ -177,9 +177,15 @@ const MessagePage = ({ name, picture, usertyping }) => {
                     </div>
                 </div>
                 <div className="flex justify-center items-center gap-5">
-                    <IoIosVideocam className="text-3xl shadow rounded-l" />
-                    <IoMdSearch className="text-2xl shadow rounded-l" />
-                    <CgMenuGridO className="text-2xl shadow rounded-l" />
+                    <button onClick={() => callUser()}>
+                        <IoIosVideocam className="text-3xl shadow rounded-l" />
+                    </button>
+                    <button>
+                        <IoMdSearch className="text-2xl shadow rounded-l" />
+                    </button>
+                    <button>
+                        <CgMenuGridO className="text-2xl shadow rounded-l" />
+                    </button>
                 </div>
             </div>
 
