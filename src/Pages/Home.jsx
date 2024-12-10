@@ -37,6 +37,7 @@ const Home = () => {
   const [callStreaming, setCallStreaming] = useState()
   const { receiveingCall, callEnded, socketId } = call;
   const [callAccepted, setCallAccepted] = useState(false)
+  const [show, setShow] = useState(false)
   const myVideoRef = useRef()
   const userVideoRef = useRef()
 
@@ -126,12 +127,18 @@ const Home = () => {
         name: user.name,
         image: user.image
       })
+    });
+
+    // Set other user video to the object
+    peer.on('stream', (stream) => {
+
     })
   }
 
   const enableMedia = () => {
     // enable my video and audio
     myVideoRef.current.srcObject = callStreaming
+    setShow(true)
   }
 
 
@@ -174,7 +181,7 @@ const Home = () => {
 
       {/* for calling */}
 
-      <div>
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
         <Call
           call={call}
           setCall={setCall}

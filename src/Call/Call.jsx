@@ -45,7 +45,7 @@ const Call = ({
         <>
             {
                 receiveingCall && !callAccepted &&
-                <div className='absolute z-10 top-0 left-0 flex justify-center items-center'>
+                <div className='flex relative justify-center items-center z-50 h-screen'>
                     {/* container */}
                     <div className='border h-40 w-full bg-gray-50 rounded-lg p-4 flex justify-between items-center'>
                         {/* call infos */}
@@ -74,7 +74,7 @@ const Call = ({
 
             {/* Call body */}
             <div className=''>
-                <div className='absolute top-0 left-0 bg-black h-screen flex justify-center items-center'>
+                <div className='z-10 h-screen flex justify-center items-center'>
                     {/* container */}
                     <div onMouseOver={() => setShowActions(true)}
                         onMouseOut={() => setShowActions(false)}
