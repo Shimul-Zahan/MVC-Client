@@ -15,18 +15,25 @@ const HandleSearch = () => {
     const [selectedUsers, setSelectedUsers] = useState([])
     const { openGroup, setOpenGroup, openWindow, setOpenWindow } = useContext(UtilityContext)
 
-    const { search } = async (e) => {
-        if (e.target.value && e.key == "Enter") {
+    console.log(selectedUsers);
+
+    const search = async (e) => {
+        "call this functio"
+        console.log(e.target.value, "input for search");
+        if (e.target.value && e.key === "Enter") {
+            console.log("go inside the function");
+            e.preventDefault();
             setSearchResult([])
             try {
-                const { data } = axios.get(
-                    `${process.env.VITE_API_ENDPOINT}/user?search=${e.target.value}`,
+                const { data } = await axios.get(
+                    `${import.meta.env.VITE_API_ENDPOINT}/user?search=${e.target.value}`,
                     {
                         headers: {
                             Authorization: `Bearer ${user?.access_token}`
                         },
                     }
                 )
+                console.log(data, "search results here");
                 if (data?.length > 0) {
                     let temporary_array = []
                     data?.forEach(user => {
@@ -42,7 +49,7 @@ const HandleSearch = () => {
                     setSearchResult([])
                 }
             } catch (error) {
-                console.log(error.response.data.error.message);
+                // console.log(error.response.data.error.message);
             }
         } else {
             setSearchResult([])
