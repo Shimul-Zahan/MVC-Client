@@ -5,7 +5,7 @@ import { IoVideocam } from "react-icons/io5";
 import { FcEndCall } from "react-icons/fc";
 import { useState } from "react";
 
-const CallActions = () => {
+const CallActions = ({ endCall }) => {
     return (
         <div className='bg-gray-700 w-full h-[90px] rounded-xl'>
             <div className="flex justify-center text-white text-xl">
@@ -21,7 +21,7 @@ const CallActions = () => {
                 <button>
                     <IoVideocam />
                 </button>
-                <button>
+                <button type="button" onClick={() => endCall()}>
                     <FcEndCall />
                 </button>
             </div>

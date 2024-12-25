@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import { store } from './app/store.js'
 import SocketContext from './Context/SocketContext.js'
 import { io } from "socket.io-client"
+import { UtilityContext, UtilityProvider } from './Context/UtilitiesContext.jsx'
 
 const socket = io(import.meta.env.VITE_SERVER_ENDPOINT);
 
@@ -36,8 +37,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <SocketContext.Provider value={socket}>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <UtilityProvider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </UtilityProvider>
   </SocketContext.Provider>
 )
