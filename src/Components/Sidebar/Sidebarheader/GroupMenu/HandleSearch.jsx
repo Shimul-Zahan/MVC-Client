@@ -17,6 +17,7 @@ const HandleSearch = () => {
 
     const { search } = async (e) => {
         if (e.target.value && e.key == "Enter") {
+            setSearchResult([])
             try {
                 const { data } = axios.get(
                     `${process.env.VITE_API_ENDPOINT}/user?search=${e.target.value}`,
@@ -26,6 +27,7 @@ const HandleSearch = () => {
                         },
                     }
                 )
+                setSearchResult(data)
             } catch (error) {
                 console.log(error.response.data.error.message);
             }
