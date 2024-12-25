@@ -5,6 +5,7 @@ import { FcCancel } from "react-icons/fc";
 import CallAreaHeader from './Components/CallAreaHeader';
 import CallArea from './Components/callArea';
 import CallActions from './Components/CallActions';
+import { useSelector } from 'react-redux';
 
 
 const Call = ({
@@ -14,11 +15,17 @@ const Call = ({
     userVideoRef,
     myVideoRef,
     callStreaming,
+    answerCall,
+    show,
+    endCall
 }) => {
-    const { receiveingCall, callEnded } = call;
+    const { receiveingCall, callEnded, name, picture } = call;
+    const { user } = useSelector((state) => state.user)
     let intervalId;
     const [timer, setTimer] = useState(0)
     const [showActions, setShowActions] = useState(false)
+
+    // console.log(show, 'from the call page');
 
 
     const handleTimer = () => {
@@ -27,7 +34,7 @@ const Call = ({
         }, (1000));
     }
 
-    console.log(timer);
+    // console.log(callStreaming, receiveingCall, callAccepted, "from call components");
 
     useEffect(() => {
         if (timer < 30) {
@@ -50,18 +57,18 @@ const Call = ({
                     <div className='border h-40 w-full bg-gray-50 rounded-lg p-4 flex justify-between items-center'>
                         {/* call infos */}
                         <div className='flex items-center gap-5'>
-                            <img src="https://wallpapers.com/images/high/funny-profile-picture-r8l2gifvpdd0kt25.webp" alt="" className='w- h-32 w-32 rounded-full' />
+                            <img src={picture} alt="" className='w- h-32 w-32 rounded-full' />
                             <div>
-                                <h1 className='text-2xl font-medium'>Shimul Zahan</h1>
+                                <h1 className='text-2xl font-medium'>{user?.name}</h1>
                                 <h1 className='text-xl font-medium'>Request to video call...</h1>
                             </div>
                         </div>
                         {/* call actions */}
                         <div className='text-4xl flex justify-center items-center gap-8'>
-                            <button>
+                            <button onClick={() => endCall()}>
                                 <FcCancel />
                             </button>
-                            <button>
+                            <button onClick={answerCall}>
                                 <FcVideoCall />
                             </button>
                         </div>
@@ -73,7 +80,7 @@ const Call = ({
             }
 
             {/* Call body */}
-            <div className=''>
+            <div className={`${show ? '' : 'hidden'}`}>
                 <div className='z-10 h-screen flex justify-center items-center'>
                     {/* container */}
                     <div onMouseOver={() => setShowActions(true)}
@@ -81,33 +88,43 @@ const Call = ({
                         className='border relative h-[80%] w-[400px] bg-red-500 rounded-xl'>
                         <div className=''>
                             {/* call header */}
-                            <CallAreaHeader />
+                            <CallAreaHeader name={name} picture={picture} />
                             {/* Call area */}
                             <div className='pt-5 p-3'>
-                                <CallArea />
+                                <CallArea name={name} picture={picture} />
                             </div>
                             {
                                 showActions && <div className='absolute bottom-0 w-full'>
-                                    <CallActions />
+                                    <CallActions endCall={endCall} />
                                 </div>
                             }
                             {/* video stream here */}
                             <div>
                                 {/* user video */}
-                                <div className=''>
-                                    <video ref={userVideoRef}
-                                        playsInline
-                                        muted
-                                        autoPlay
-                                        className='h-full w-full'
-                                    ></video>
-                                </div>
+                                {callAccepted && !callEnded && (
+                                    <div>
+                                        <video
+                                            ref={userVideoRef}
+                                            playsInline
+                                            muted
+                                            autoPlay
+                                            className="h-full w-full"
+                                        ></video>
+                                    </div>
+                                )}
                             </div>
                             <div>
                                 {/* My video */}
-                                <div className={`bg-blue-500 h-32 w-24 absolute right-0 rounded-lg ${showActions ? ' bottom-[100px]' : 'bottom-0'}`}>
-                                    <video ref={myVideoRef} playsInline muted autoPlay></video>
-                                </div>
+                                {callStreaming && (
+                                    <div className={`bg-blue-500 h-32 w-24 absolute right-0 rounded-lg ${showActions ? ' bottom-[100px]' : 'bottom-0'}`}>
+                                        <video
+                                            ref={myVideoRef}
+                                            playsInline
+                                            muted
+                                            autoPlay
+                                        ></video>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

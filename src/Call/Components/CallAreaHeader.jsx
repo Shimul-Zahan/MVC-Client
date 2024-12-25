@@ -2,7 +2,7 @@ import { IoCaretBackSharp } from "react-icons/io5";
 import { FaLock } from "react-icons/fa";
 import { MdOutlineGroupAdd } from "react-icons/md";
 
-const CallAreaHeader = () => {
+const CallAreaHeader = ({ name, picture }) => {
     return (
         <div className='text-sm text-white flex justify-between items-center p-3'>
             <button>
