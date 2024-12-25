@@ -1,4 +1,3 @@
-"""
 # WhatsApp Clone Project Plan
 
 ## Introduction
@@ -112,5 +111,4 @@ This project is a full-stack WhatsApp-like chat application that allows users to
 ### Some update
 - add polling system
 - add event system
-- and others
-"""
+- and notes/schedule/Agreement 
