@@ -27,7 +27,20 @@ const HandleSearch = () => {
                         },
                     }
                 )
-                setSearchResult(data)
+                if (data?.length > 0) {
+                    let temporary_array = []
+                    data?.forEach(user => {
+                        let temp = {
+                            value: user._id,
+                            label: user.name,
+                            image: user.image,
+                        }
+                        temporary_array.push(temp)
+                    })
+                    setSearchResult(temporary_array)
+                } else {
+                    setSearchResult([])
+                }
             } catch (error) {
                 console.log(error.response.data.error.message);
             }
