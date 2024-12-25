@@ -5,7 +5,7 @@ const GroupInput = ({ name, setName }) => {
         <div className="w-full max-w-md mx-auto">
             <input
                 type="text"
-                placeholder="Enter text"
+                placeholder="Enter Group Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full bg-transparent border-b border-gray-500  focus:outline-none focus:border-gray-700 transition-colors duration-300 py-2 text-white"

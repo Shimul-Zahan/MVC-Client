@@ -2,12 +2,14 @@ import React, { useContext, useState } from 'react'
 import { IoArrowBack } from 'react-icons/io5'
 import GroupInput from './GroupInput'
 import MultipleSelector from './MultipleSelector'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { UtilityContext } from '../../../../Context/UtilitiesContext'
 import axios from 'axios'
+import { createGroupConversation } from '../../../../features/chatSlice'
 
 const HandleSearch = () => {
 
+    const dispatch = useDispatch()
     const [name, setName] = useState("")
     const { user } = useSelector((state) => state.user)
     const { status } = useSelector((state) => state.chat)
@@ -15,13 +17,8 @@ const HandleSearch = () => {
     const [selectedUsers, setSelectedUsers] = useState([])
     const { openGroup, setOpenGroup, openWindow, setOpenWindow } = useContext(UtilityContext)
 
-    console.log(selectedUsers);
-
     const search = async (e) => {
-        "call this functio"
-        console.log(e.target.value, "input for search");
         if (e.target.value && e.key === "Enter") {
-            console.log("go inside the function");
             e.preventDefault();
             setSearchResult([])
             try {
@@ -49,7 +46,7 @@ const HandleSearch = () => {
                     setSearchResult([])
                 }
             } catch (error) {
-                // console.log(error.response.data.error.message);
+                console.log(error.response.data.error.message);
             }
         } else {
             setSearchResult([])
@@ -57,11 +54,26 @@ const HandleSearch = () => {
     }
 
 
+    const createGroupAction = async () => {
+        console.log(selectedUsers, name);
+        let users = []
+        selectedUsers.forEach(user => users.push(user.value))
+        let values = {
+            name,
+            users,
+            token: user?.access_token,
+        }
+        let groupConvo = await dispatch(createGroupConversation(values))
+        console.log(groupConvo);
+    }
+
     return (
         <div className="w-full space-y-5">
             <div className="flex justify-between items-center pr-5">
                 <IoArrowBack onClick={() => setOpenWindow(false)} className="text-2xl cursor-pointer" />
-                <h1>Creating Group...</h1>
+                <button className='bg-green-500 py-1 px-3 rounded-lg'
+                    onClick={() => createGroupAction()}
+                >Group Group</button>
             </div>
 
             {/* for search icons */}

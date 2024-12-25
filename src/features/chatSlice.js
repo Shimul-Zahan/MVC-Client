@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from 'axios';
 
 const CHAT_ENDPOINT = `${import.meta.env.VITE_API_ENDPOINT}/conversation`;
+const GROUP_ENDPOINT = `${import.meta.env.VITE_API_ENDPOINT}/group`;
 const MESSAGE_ENDPOINT = `${import.meta.env.VITE_API_ENDPOINT}/message`;
 
 // initial state
@@ -114,6 +115,30 @@ export const sendMessage = createAsyncThunk(
         }
     })
 
+// createGroupConversation
+export const createGroupConversation = createAsyncThunk(
+    "conversation/create_group",
+    async (values, { rejectWithValue }) => {
+        console.log(values, "from redux");
+        const { token, name, users } = values
+        try {
+            const { data } = await axios.post(
+                `${CHAT_ENDPOINT}/group`,
+                { name, users },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+            return data
+
+        } catch (error) {
+            console.log(error.response.data.message);
+            return rejectWithValue(error.response.data.message);
+        }
+    }
+)
+
 
 
 // create slice
@@ -157,7 +182,7 @@ export const chatSlice = createSlice({
             console.log(files);
             let filesToRemove = [files[index]]
             console.log(filesToRemove);
-            state.files = files.filter((f)=> !filesToRemove.includes(f))
+            state.files = files.filter((f) => !filesToRemove.includes(f))
         }
     },
     extraReducers(builder) {
