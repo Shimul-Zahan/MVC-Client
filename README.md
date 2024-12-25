@@ -108,4 +108,9 @@ This project is a full-stack WhatsApp-like chat application that allows users to
 
 ### Testing:
 - Test the app thoroughly, particularly for real-time features like voice messages and story updates.
+
+### Some update
+- add polling system
+- add event system
+- and others
 """
