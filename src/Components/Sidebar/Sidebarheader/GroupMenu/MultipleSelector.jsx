@@ -7,16 +7,16 @@ const MultipleSelector = ({ selectedUsers, searchResult, setSelectedUsers, searc
             onChange={setSelectedUsers}
             onKeyDown={(e) => search(e)}
             isMulti
-            formatOptionLabel={(user) => {
+            formatOptionLabel={(user) => (
                 <div className='flex items-center gap-1'>
                     <img
                         src={user.image}
                         alt="profile image"
                         className='w-8 h-8 object-cover rounded-full'
                     />
-                    <span className='text-[#222]'>{user.label}</span>
+                    <span className='text-white'>{user.label}</span>
                 </div>
-            }}
+            )}
             placeholder="Search or Select users"
             styles={{
                 control: (baseStyles, state) => ({
@@ -34,9 +34,14 @@ const MultipleSelector = ({ selectedUsers, searchResult, setSelectedUsers, searc
                     ...baseStyles,
                     color: 'white',
                 }),
+                input: (baseStyles) => ({
+                    ...baseStyles,
+                    color: 'white',
+                }),
                 menu: (baseStyles) => ({
                     ...baseStyles,
                     background: 'transparent',
+                    color: 'white'
                 }),
                 option: (baseStyles, state) => ({
                     ...baseStyles,
