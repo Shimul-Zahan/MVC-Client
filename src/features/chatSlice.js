@@ -52,7 +52,7 @@ export const createConversation = createAsyncThunk(
                         Authorization: `Bearer ${token}`
                     }
                 })
-            // console.log(data);
+            console.log(data, "from slice for convo");
             return data
 
         } catch (error) {
