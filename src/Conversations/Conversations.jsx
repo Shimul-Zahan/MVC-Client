@@ -14,11 +14,13 @@ const Conversations = ({ onlineUsers, usertyping }) => {
 
     // console.log(usertyping, 'user typing');
 
-    const getReceiverId = async (receiver_id) => {
+    const getReceiverId = async (convo) => {
         const values = {
             token: user?.access_token,
-            receiver_id
+            receiver_id: convo?.users[1]?._id,
+            isGroup: convo.isGroup ? convo._id : false,
         }
+        console.log("hit this route", values);
         const res = await dispatch(createConversation(values))
         socket.emit('join conversation', res?.payload?._id)
     }
@@ -31,7 +33,7 @@ const Conversations = ({ onlineUsers, usertyping }) => {
                 conversations && conversations.map((convo) =>
 
                     <div key={convo?._id}
-                        onClick={() => getReceiverId(convo?.users[1]?._id)}
+                        onClick={() => getReceiverId(convo)}
                         className="flex justify-start cursor-pointer items-center w-full py-2">
                         <div className="w-[17%]">
                             <div

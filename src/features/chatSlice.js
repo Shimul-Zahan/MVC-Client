@@ -41,12 +41,12 @@ export const createConversation = createAsyncThunk(
     "conversation/open_chat",
     async (values, { rejectWithValue }) => {
         // console.log(values);
-        const { token, receiver_id } = values
+        const { token, receiver_id, isGroup } = values
         try {
             const { data } = await axios.post(
                 CHAT_ENDPOINT,
                 // cause we send this revceiver id as a body
-                { receiver_id },
+                { receiver_id, isGroup },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
