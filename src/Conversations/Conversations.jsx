@@ -13,6 +13,7 @@ const Conversations = ({ onlineUsers, usertyping }) => {
     const socket = useContext(SocketContext);
 
     // console.log(usertyping, 'user typing');
+    console.log(conversations);
 
     const getReceiverId = async (convo) => {
         const values = {
@@ -20,7 +21,6 @@ const Conversations = ({ onlineUsers, usertyping }) => {
             receiver_id: convo?.users[1]?._id,
             isGroup: convo.isGroup ? convo._id : false,
         }
-        console.log("hit this route", values);
         const res = await dispatch(createConversation(values))
         socket.emit('join conversation', res?.payload?._id)
     }

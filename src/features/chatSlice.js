@@ -40,7 +40,7 @@ export const getConvo = createAsyncThunk(
 export const createConversation = createAsyncThunk(
     "conversation/open_chat",
     async (values, { rejectWithValue }) => {
-        // console.log(values);
+        console.log(values);
         const { token, receiver_id, isGroup } = values
         try {
             const { data } = await axios.post(
