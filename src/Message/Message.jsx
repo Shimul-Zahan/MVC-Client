@@ -36,6 +36,8 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
     const { activeConvo, messages, files } = useSelector((state, error) => state?.chat)
     const { user } = useSelector((state, error) => state?.user)
 
+    console.log("active convo here from message page", messages);
+
     // handle typing
     const onchangeTypingHandler = (e) => {
         setInput(e.target.value)
@@ -104,7 +106,7 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
     const renderFilePreview = (file) => {
 
         if (file?.type?.includes("image")) {
-            return <img src={file?.file?.secure_url} alt="Image" className="max-w-xs max-h-60 object-cover" />
+            return <img src={file?.file?.secure_url} alt="Image" className="max-w-xs max-h-60 object-cover rounded-sm" />
         }
         if (file?.type?.includes("video")) {
             return (
@@ -205,19 +207,35 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
                                         key={msg._id}
                                         className={`mb-4 flex ${isMyMessage ? "justify-end" : "justify-start"}`}
                                     >
-                                        <div
-                                            className={`max-w-xs p-3 rounded-lg ${isMyMessage
-                                                ? "bg-blue-500 text-white"
-                                                : "bg-gray-200 text-gray-800"
-                                                }`}
-                                        >
+                                        <div className={`flex flex-col ${isMyMessage ? "items-end" : ""}`}>
                                             {/* Display text message */}
-                                            {(msg.message || "").length > 0 && <p>{msg.message}</p>}
+                                            <div className="flex justify-start items-center gap-5">
+                                                {
+                                                    !isMyMessage && msg?.conversation.isGroup &&
+                                                    <div>
+                                                        <img src={msg?.sender?.image} alt="" className="h-8 w-8 rounded-full" />
+                                                    </div>
+                                                }
+                                                <div className={`max-w-xs px-3 py-2 rounded-lg ${isMyMessage
+                                                    ? "bg-blue-500 text-white"
+                                                    : "bg-gray-200 text-gray-800"
+                                                    }`}>
+                                                    {(msg.message || "").length > 0 && <p>{msg.message}</p>}
+                                                </div>
+                                            </div>
 
                                             {/* Render image or video preview */}
                                             {msg?.files && msg?.files.length > 0 && msg?.files.map((file, idx) => (
-                                                <div key={idx} className="mt-2">
-                                                    {renderFilePreview(file)}
+                                                <div className="flex justify-start items-center gap-5">
+                                                    {
+                                                        !isMyMessage && msg?.conversation.isGroup &&
+                                                        <div>
+                                                            <img src={msg?.sender?.image} alt="" className="h-8 w-8 rounded-full" />
+                                                        </div>
+                                                    }
+                                                    <div key={idx} className="mt-2">
+                                                        {renderFilePreview(file)}
+                                                    </div>
                                                 </div>
                                             ))}
 
@@ -228,6 +246,8 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
                             {/* Scroll Anchor */}
                             <div ref={endRef}></div>
                         </div>
+
+                        {/* for actions here */}
                         <div className="flex relative items-center p-4 bg-blue-600 text-black border-t text-lg border-gray-300">
 
                             {/* Emoji picker here */}
