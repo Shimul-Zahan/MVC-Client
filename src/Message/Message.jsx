@@ -204,7 +204,7 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
                                 const isMyMessage = msg?.sender?._id === user?._id;
                                 return (
                                     <div
-                                        key={msg._id}
+                                        key={index}
                                         className={`mb-4 flex ${isMyMessage ? "justify-end" : "justify-start"}`}
                                     >
                                         <div className={`flex flex-col ${isMyMessage ? "items-end" : ""}`}>

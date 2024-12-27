@@ -1,6 +1,36 @@
-import React from 'react'
+import audioFile from '../assets/laughter-man-sqeeek-80612-64949.mp3';
+import picture from '../../assets/react.svg'
+import { FcCancel, FcVideoCall } from 'react-icons/fc';
+import { useEffect, useState } from 'react';
 
-const Ringing = () => {
+
+const Ringing = ({ answerCall, user, call, setCall }) => {
+
+    const { receiveingCall, callEnde } = call
+    const [timer, setTimer] = useState(0)
+    const [showActions, setShowActions] = useState(false)
+    let intervalId;
+
+    const handleTimer = () => {
+        intervalId = setInterval(() => {
+            setTimer((prev) => prev + 1)
+        }, (1000));
+    }
+
+    // console.log(callStreaming, receiveingCall, callAccepted, "from call components");
+
+    useEffect(() => {
+        if (timer < 30) {
+            handleTimer()
+        } else {
+            setCall({ ...call, receiveingCall: false })
+        }
+        // Cleanup interval
+        return () => {
+            clearInterval(intervalId);
+        }
+    }, [timer])
+
     return (
         <div className='flex relative justify-center items-center z-50 h-screen'>
             {/* container */}
