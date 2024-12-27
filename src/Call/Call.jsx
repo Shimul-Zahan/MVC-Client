@@ -23,11 +23,24 @@ const Call = ({
     const { user } = useSelector((state) => state.user)
     const [showActions, setShowActions] = useState(false)
 
+    console.log(receiveingCall, callAccepted, "for conditional rendering");
 
     return (
         <>
+            {
+                receiveingCall && !callEnded && (
+                    <Ringing
+                        myVideoRef={myVideoRef}
+                        answerCall={answerCall}
+                        user={user}
+                        call={call}
+                        setCall={setCall}
+                    />
+                )
+            }
+
             {/* Call body */}
-            <div className='z-10 h-screen flex justify-center items-center'>
+            <div className={` ${!callAccepted ? 'hidden' : 'z-10 h-screen flex justify-center items-center'}`}>
                 {/* container */}
                 <div onMouseOver={() => setShowActions(true)}
                     onMouseOut={() => setShowActions(false)}
@@ -77,19 +90,6 @@ const Call = ({
 
                 </div>
             </div>
-
-            {
-                receiveingCall && !callEnded && (
-                    <Ringing
-                        myVideoRef={myVideoRef}
-                        answerCall={answerCall}
-                        user={user}
-                        call={call}
-                        setCall={setCall}
-                    />
-                )
-            }
-
         </>
     )
 }

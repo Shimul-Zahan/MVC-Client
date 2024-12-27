@@ -18,6 +18,7 @@ import { FaFilePdf } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { FaFileDownload } from "react-icons/fa";
 import { FaFileWord } from "react-icons/fa";
+import { getConversationName, getConversationPicture } from "../Utils/chat";
 
 
 
@@ -36,7 +37,7 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
     const { activeConvo, messages, files } = useSelector((state, error) => state?.chat)
     const { user } = useSelector((state, error) => state?.user)
 
-    console.log("active convo here from message page", messages);
+    console.log("active convo here from message page", activeConvo);
 
     // handle typing
     const onchangeTypingHandler = (e) => {
@@ -172,9 +173,9 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
             {/* Header */}
             <div className="bg-blue-600 text-white p-3 px-5 pr-8 gap-4 flex justify-between items-center">
                 <div className="gap-4 flex justify-start items-center">
-                    <img src={picture} alt="" className="h-12 w-12 rounded-full" />
+                    <img src={getConversationPicture(user, activeConvo?.users)} alt="" className="h-12 w-12 rounded-full" />
                     <div className="">
-                        <h1 className="text-lg">{name}</h1>
+                        <h1 className="text-lg">{getConversationName(user, activeConvo?.users)}</h1>
                         <h1 className="text-sm">{usertyping ? <SyncLoader color="#fff" size={8} /> : 'Online'}</h1>
                     </div>
                 </div>
