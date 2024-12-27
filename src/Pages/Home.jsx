@@ -73,39 +73,38 @@ const Home = () => {
   }, [user])
 
 
-  //? -----------here setup media connection----------------
+  //! -----------here setup media connection----------------
   const setupMedia = () => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((stream) => {
+        console.log("MediaStream obtained:", stream);
         setCallStreaming(stream);
-        myVideoRef.current.srcObject = stream
       })
       .catch((err) => {
-        console.error("Error accessing media devices", err);
+        console.error("Error accessing media devices", err.message);
       });
   };
 
-
-  //? -----useEffect for setup media and socket listen-------
+  //! -----useEffect for setup media and socket listen-------
   useEffect(() => {
     setupMedia()
-    // socket.on('setup socket', (id) => {
-    //   setCall({ ...call, socketId: id })
-    // })
+    socket.on('setup socket', (id) => {
+      setCall({ ...call, socketId: id })
+    })
 
     // listen socket for calling
-    // socket.on('call user', (data) => {
-    //   setCall({
-    //     ...call,
-    //     // Caller socket id
-    //     socketId: data.from,
-    //     name: data.name,
-    //     image: data.image,
-    //     signal: data.signal,
-    //     // now i am receiveing the call
-    //     receiveingCall: true,
-    //   })
-    // })
+    socket.on('call user', (data) => {
+      setCall({
+        ...call,
+        // Caller socket id
+        socketId: data.from,
+        name: data.name,
+        image: data.image,
+        signal: data.signal,
+        // now i am receiveing the call
+        receiveingCall: true,
+      })
+    })
 
     // socket.on('call ended', () => {
     //   console.log('go to this function in useEffect');
@@ -119,16 +118,15 @@ const Home = () => {
     // })
   }, [])
 
-  //? --------------call user function is here --------------
+  //! --------------call user function is here --------------
   const callUser = () => {
     enableMedia()
     // set a receiver caller details
     setCall({
       ...call,
       name: getConversationName(user, activeConvo.users),
-      // id: getConversationId(user, activeConvo.users),
       picture: getConversationPicture(user, activeConvo.users),
-    })
+    });
 
     const peer = new Peer({
       // who start call is called initiator
@@ -163,8 +161,7 @@ const Home = () => {
     connectionRef.current = peer;
   }
 
-
-  //? -----------Ansewer the call----------------------------
+  //! -----------Ansewer the call----------------------------
   const answerCall = () => {
     enableMedia()
     setCallAccepted(true)
@@ -192,7 +189,7 @@ const Home = () => {
     connectionRef.current = peer;
   }
 
-  //?-------------End Call-----------------------------------
+  //! -------------End Call----------------------------------
   const endCall = () => {
     setShow(false)
     setCall({ ...call, callEnded: true, receiveingCall: false })
@@ -201,10 +198,18 @@ const Home = () => {
     connectionRef.current = null;
   }
 
-  //? -----------Here we enable the media devices------------
+  //! -----------Here we enable the media devices------------
   const enableMedia = () => {
+    setupMedia()
+    console.log(callStreaming);
     setShow(true);
-    myVideoRef.current.srcObject = callStreaming
+
+    if (myVideoRef.current && callStreaming) {
+      myVideoRef.current.srcObject = callStreaming;
+    } else {
+      console.error("myVideoRef.current or callStreaming is undefined");
+    }
+
   };
 
 
