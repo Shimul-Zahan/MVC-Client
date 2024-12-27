@@ -77,8 +77,8 @@ const Home = () => {
   const setupMedia = () => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((stream) => {
-        // console.log(stream, 'streaming here');
         setCallStreaming(stream);
+        myVideoRef.current.srcObject = stream
       })
       .catch((err) => {
         console.error("Error accessing media devices", err);
@@ -89,34 +89,34 @@ const Home = () => {
   //? -----useEffect for setup media and socket listen-------
   useEffect(() => {
     setupMedia()
-    socket.on('setup socket', (id) => {
-      setCall({ ...call, socketId: id })
-    })
+    // socket.on('setup socket', (id) => {
+    //   setCall({ ...call, socketId: id })
+    // })
 
     // listen socket for calling
-    socket.on('call user', (data) => {
-      setCall({
-        ...call,
-        // Caller socket id
-        socketId: data.from,
-        name: data.name,
-        image: data.image,
-        signal: data.signal,
-        // now i am receiveing the call
-        receiveingCall: true,
-      })
-    })
+    // socket.on('call user', (data) => {
+    //   setCall({
+    //     ...call,
+    //     // Caller socket id
+    //     socketId: data.from,
+    //     name: data.name,
+    //     image: data.image,
+    //     signal: data.signal,
+    //     // now i am receiveing the call
+    //     receiveingCall: true,
+    //   })
+    // })
 
-    socket.on('call ended', () => {
-      console.log('go to this function in useEffect');
-      setShow(false)
-      setCall({ ...call, callEnded: true, receiveingCall: false })
-      console.log(call, 'after re-arranging');
-      myVideoRef.current.srcObject = null
-      userVideoRef.current.srcObject = null
-      connectionRef.current = null;
-      connectionRef?.current?.destroy()
-    })
+    // socket.on('call ended', () => {
+    //   console.log('go to this function in useEffect');
+    //   setShow(false)
+    //   setCall({ ...call, callEnded: true, receiveingCall: false })
+    //   console.log(call, 'after re-arranging');
+    //   myVideoRef.current.srcObject = null
+    //   userVideoRef.current.srcObject = null
+    //   connectionRef.current = null;
+    //   connectionRef?.current?.destroy()
+    // })
   }, [])
 
   //? --------------call user function is here --------------
