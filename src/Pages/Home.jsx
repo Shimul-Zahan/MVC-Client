@@ -259,6 +259,7 @@ const Home = () => {
           show={show}
           setShow={setShow}
           endCall={endCall}
+          receiveingCall={receiveingCall}
         />
       </div>
     </div>
