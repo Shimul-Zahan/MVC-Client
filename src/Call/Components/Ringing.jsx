@@ -8,7 +8,6 @@ const Ringing = ({ answerCall, user, call, setCall }) => {
 
     const { receiveingCall, callEnde } = call
     const [timer, setTimer] = useState(0)
-    const [showActions, setShowActions] = useState(false)
     let intervalId;
 
     const handleTimer = () => {
