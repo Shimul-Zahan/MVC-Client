@@ -8,7 +8,7 @@ const VideoCallUI = () => {
     const [isMicMuted, setIsMicMuted] = useState(false);
     const [isCameraOff, setIsCameraOff] = useState(false);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
-    const { setCalling } = useContext(CallContext);
+    const { endCall } = useContext(CallContext);
 
     const toggleMute = () => {
         setIsMicMuted((prevState) => !prevState);
@@ -22,15 +22,8 @@ const VideoCallUI = () => {
         setIsScreenSharing((prevState) => !prevState);
     };
 
-    const endCall = () => {
-        setCalling(false);
-        console.log('Call Ended');
-        // Here you can add functionality to end the call (e.g., disconnect)
-    };
-
     const openChat = () => {
         console.log("Chat button clicked");
-        // Implement your chat functionality here
     };
 
     return (
