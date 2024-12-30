@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaFileDownload } from "react-icons/fa";
 import { FaFileWord } from "react-icons/fa";
 import { getConversationName, getConversationPicture } from "../Utils/chat";
+import { CallContext } from "../CallingSystem/CallContext/CallContext";
 
 
 
@@ -32,6 +33,7 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
     const [showAttachments, setShowAttachments] = useState(false)
     const [showPicker, setShowPicker] = useState(false)
     const socket = useContext(SocketContext);
+    const { handleCallAction } = useContext(CallContext)
 
     // get active convo id here
     const { activeConvo, messages, files } = useSelector((state, error) => state?.chat)
@@ -180,7 +182,7 @@ const MessagePage = ({ name, picture, usertyping, callUser }) => {
                     </div>
                 </div>
                 <div className="flex justify-center items-center gap-5">
-                    <button onClick={() => callUser()}>
+                    <button onClick={() => handleCallAction()}>
                         <IoIosVideocam className="text-3xl shadow rounded-l" />
                     </button>
                     <button>

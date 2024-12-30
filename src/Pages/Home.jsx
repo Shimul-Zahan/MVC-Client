@@ -12,6 +12,8 @@ import SocketContext from '../Context/SocketContext';
 import Call from '../Call/Call';
 import { getConversationId, getConversationName, getConversationPicture } from '../Utils/chat';
 import Peer from 'simple-peer/simplepeer.min.js';
+import VideoCallUI from '../CallingSystem/Components/CallUI';
+import { CallContext } from '../CallingSystem/CallContext/CallContext';
 
 
 const callData = {
@@ -31,6 +33,7 @@ const Home = () => {
   const socket = useContext(SocketContext);
   const [onlineUsers, setOnlineUser] = useState([])
   const [usertyping, setUserTyping] = useState(false)
+  const { calling } = useContext(CallContext)
 
   // for all types of callings
   const [call, setCall] = useState(callData)
@@ -75,7 +78,7 @@ const Home = () => {
 
   //! -----------here setup media connection----------------
   const setupMedia = () => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    navigator.mediaDevices.getUserMedia({ video: false, audio: false })
       .then((stream) => {
         console.log("MediaStream obtained:", stream);
         setCallStreaming(stream);
@@ -252,7 +255,7 @@ const Home = () => {
 
       {/* for calling */}
 
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+      {/* <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
         <Call
           call={call}
           setCall={setCall}
@@ -266,7 +269,16 @@ const Home = () => {
           endCall={endCall}
           receiveingCall={receiveingCall}
         />
-      </div>
+      </div> */}
+
+      {
+        calling && (
+          <div className="absolute w-full top-0 left-1/2 transform -translate-x-1/2 ">
+            <VideoCallUI />
+          </div>
+        )
+      }
+
     </div>
   )
 }
