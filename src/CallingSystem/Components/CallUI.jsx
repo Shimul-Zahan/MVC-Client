@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { CallContext } from '../CallContext/CallContext';
 
 // Import React Icons
@@ -8,7 +8,7 @@ const VideoCallUI = () => {
     const [isMicMuted, setIsMicMuted] = useState(false);
     const [isCameraOff, setIsCameraOff] = useState(false);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
-    const { endCall } = useContext(CallContext);
+    const { endCall, videoRefLocal, videoRefRemote } = useContext(CallContext);
 
     const toggleMute = () => {
         setIsMicMuted((prevState) => !prevState);
@@ -35,7 +35,7 @@ const VideoCallUI = () => {
                         autoPlay
                         muted
                         className="w-full h-full object-cover rounded-lg"
-                    // ref={videoRefLocal}
+                        ref={videoRefLocal}
                     ></video>
                     <div className="absolute top-2 left-2 text-white bg-black bg-opacity-50 rounded-full p-1">
                         You
@@ -45,7 +45,7 @@ const VideoCallUI = () => {
                     <video
                         autoPlay
                         className="w-full h-full object-cover rounded-lg"
-                    // ref={videoRefRemote}
+                        ref={videoRefRemote}
                     ></video>
                     <div className="absolute top-2 left-2 text-white bg-black bg-opacity-50 rounded-full p-1">
                         Participant
