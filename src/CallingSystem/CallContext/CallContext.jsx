@@ -40,6 +40,20 @@ const CallContextProvider = ({ children }) => {
 
             // Save the stream to use later in call (e.g., for WebRTC)
             setLocalStream(stream);
+
+            // navigator.mediaDevices.getUserMedia({
+            //     video: true,
+            //     audio: true,
+            // })
+            //     .then((stream) => {
+            //         videoRefLocal.current.srcObject = stream;
+            //         // Save the stream to use later in call (e.g., for WebRTC)
+            //         setLocalStream(stream);
+            //     })
+            //     .catch((err) => {
+            //         console.error("Error accessing media devices:", err);
+            //     })
+
         } catch (err) {
             console.error("Error accessing media devices:", err);
         }
@@ -54,7 +68,28 @@ const CallContextProvider = ({ children }) => {
 
     // All Actions here
     const handleCallAction = async () => {
-        handleStartCalling(setCalling, setCallStatus)
+        setCalling(true);
+        setCallStatus('dialing');
+        await peerConnectionAndIcecandidates()
+    }
+
+    const peerConnectionAndIcecandidates = async () => {
+        // STUN server for NAT traversal
+        const peerConnection = new RTCPeerConnection({
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+            ],
+        });
+
+        console.log(peerConnection);
+
+        /*
+        Once you have access to the local media (audio/video), you need to add it to the peer connection so that it can be sent to the remote peer.
+        You can use the addTrack() method to add tracks (audio or video) to the connection.
+        */
+        if (localStream) {
+            console.log(localStream);
+        }
     }
 
     const endCall = () => {
