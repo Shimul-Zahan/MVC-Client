@@ -1,6 +1,9 @@
 import React, { createContext, useEffect, useRef, useState } from 'react';
 import { endCallAction } from '../code/endCall'
 import { handleStartCalling } from '../code/startCall';
+import { mute } from '../code/mute';
+import { turnOffCamera } from '../code/turnOffCamera';
+import { startScreenSharing, stopScreenSharing } from '../code/screenSharing';
 
 // Create the context
 const CallContext = createContext();
@@ -9,19 +12,19 @@ const CallContextProvider = ({ children }) => {
 
     const [calling, setCalling] = useState(false)
     const [callStatus, setCallStatus] = useState('')
+    // For caller
     const [localStream, setLocalStream] = useState()
+    // For receiver
+    const [remoteStream, setRemoteSream] = useState()
+    // for actions
+    const [isMicMuted, setIsMicMuted] = useState(false);
+    const [isCameraOff, setIsCameraOff] = useState(false);
+    const [isScreenSharing, setIsScreenSharing] = useState(false);
+    const [status, setStatus] = useState({})
+    const [originalVideoTrack, setOriginalVideoTrack] = useState(null);
+
     const videoRefLocal = useRef()
     const videoRefRemote = useRef()
-
-    const handleCallAction = async () => {
-        handleStartCalling(setCalling, setCallStatus)
-    }
-
-
-    const endCall = () => {
-        endCallAction(setCalling, setCallStatus, localStream, videoRefLocal, videoRefRemote)
-    }
-
 
     // here are for enable video calling media
     const startVideoStream = async () => {
@@ -41,14 +44,54 @@ const CallContextProvider = ({ children }) => {
         }
     };
 
-    console.log('locastream', localStream?.getTracks());
-
 
     useEffect(() => {
         if (calling) {
             startVideoStream();
         }
     }, [calling]);
+
+    // All Actions here
+    const handleCallAction = async () => {
+        handleStartCalling(setCalling, setCallStatus)
+    }
+
+    const endCall = () => {
+        endCallAction(setCalling, setCallStatus, localStream, videoRefLocal, videoRefRemote)
+    }
+
+    const toggleMute = () => {
+        setIsMicMuted((prevState) => !prevState);
+        mute(localStream, setStatus)
+    };
+
+    const toggleCamera = () => {
+        setIsCameraOff((prevState) => !prevState);
+        turnOffCamera(localStream)
+    };
+
+    // screen sharing
+    // const { startSharing, stopSharing } = screenSharing(localStream, setLocalStream, videoRefLocal)
+    // console.log(isScreenSharing);
+    // const toggleScreenSharing = () => {
+    //     if (isScreenSharing) {
+    //         stopSharing();
+    //     } else {
+    //         startSharing();
+    //     }
+    //     setIsScreenSharing((prevState) => !prevState);
+    // };
+
+    const toggleScreenSharing = async () => {
+        if (isScreenSharing) {
+            console.log('call this function');
+            stopScreenSharing(originalVideoTrack, videoRefLocal, setLocalStream);
+        } else {
+            startScreenSharing(localStream, setLocalStream, videoRefLocal, setOriginalVideoTrack);
+        }
+        setIsScreenSharing(prevState => !prevState);
+    };
+
 
 
     return (
@@ -59,6 +102,13 @@ const CallContextProvider = ({ children }) => {
             endCall,
             videoRefLocal,
             videoRefRemote,
+            toggleCamera,
+            toggleMute,
+            toggleScreenSharing,
+            isCameraOff,
+            isMicMuted,
+            isScreenSharing,
+            status,
         }}>
             {children}
         </CallContext.Provider>

@@ -11,13 +11,13 @@ export const endCallAction = async (setCalling,
     }
 
     // Optionally clear the video elements
-    const localVideoElement = videoRefLocal.cureent;
+    const localVideoElement = videoRefLocal.current;
     if (localVideoElement) {
         console.log('second function');
         localVideoElement.srcObject = null;
     }
 
-    const remoteVideoElement = videoRefRemote.cureent;
+    const remoteVideoElement = videoRefRemote.current;
     if (remoteVideoElement) {
         console.log('third function');
         remoteVideoElement.srcObject = null;

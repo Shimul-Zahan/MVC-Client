@@ -2,25 +2,20 @@ import React, { useContext, useRef, useState } from 'react';
 import { CallContext } from '../CallContext/CallContext';
 
 // Import React Icons
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaCommentAlt, FaPhoneSlash, FaPhoneVolume } from 'react-icons/fa';
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaCommentAlt, FaPhoneSlash, FaPhoneVolume, FaRegEyeSlash } from 'react-icons/fa';
 
 const VideoCallUI = () => {
-    const [isMicMuted, setIsMicMuted] = useState(false);
-    const [isCameraOff, setIsCameraOff] = useState(false);
-    const [isScreenSharing, setIsScreenSharing] = useState(false);
-    const { endCall, videoRefLocal, videoRefRemote } = useContext(CallContext);
 
-    const toggleMute = () => {
-        setIsMicMuted((prevState) => !prevState);
-    };
-
-    const toggleCamera = () => {
-        setIsCameraOff((prevState) => !prevState);
-    };
-
-    const toggleScreenSharing = () => {
-        setIsScreenSharing((prevState) => !prevState);
-    };
+    const { endCall,
+        videoRefLocal,
+        videoRefRemote,
+        toggleMute,
+        toggleCamera,
+        toggleScreenSharing,
+        isCameraOff,
+        isMicMuted,
+        isScreenSharing,
+        status, } = useContext(CallContext);
 
     const openChat = () => {
         console.log("Chat button clicked");
@@ -29,6 +24,7 @@ const VideoCallUI = () => {
     return (
         <div className="flex flex-col items-center justify-center h-screen w-full bg-gray-900">
             {/* Video Screens */}
+            <h1>{ }</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl">
                 <div className="relative w-full h-72 md:h-96 bg-gray-600 rounded-lg">
                     <video
@@ -80,7 +76,8 @@ const VideoCallUI = () => {
                     onClick={toggleScreenSharing}
                     className={`w-16 h-16 bg-gray-800 text-white rounded-full flex items-center justify-center ${isScreenSharing ? 'bg-blue-600' : 'bg-gray-600'}`}
                 >
-                    <FaDesktop />
+                    <FaDesktop className={`${isScreenSharing ? 'hidden' : 'block'}`} />
+                    <FaRegEyeSlash className={`${isScreenSharing ? 'block' : 'hidden'}`} />
                 </button>
 
                 {/* Chat Button */}
