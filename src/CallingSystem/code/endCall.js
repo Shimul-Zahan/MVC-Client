@@ -2,7 +2,7 @@ export const endCallAction = async (setCalling,
     setCallStatus,
     localStream,
     videoRefLocal,
-    videoRefRemote) => {
+    videoRefRemote, screenStream) => {
 
     // Stop all media tracks (audio and video)
     if (localStream) {
@@ -15,6 +15,12 @@ export const endCallAction = async (setCalling,
     if (localVideoElement) {
         console.log('second function');
         localVideoElement.srcObject = null;
+    }
+
+    // for stop sharing
+    if (screenStream) {
+        console.log('Stopping screen sharing tracks');
+        screenStream.getTracks().forEach(track => track.stop());
     }
 
     const remoteVideoElement = videoRefRemote.current;

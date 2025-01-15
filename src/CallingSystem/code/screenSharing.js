@@ -1,4 +1,9 @@
-export const startScreenSharing = async (localStream, setLocalStream, videoRefLocal, setOriginalVideoTrack) => {
+export const startScreenSharing = async (localStream,
+    setLocalStream,
+    videoRefLocal,
+    setOriginalVideoTrack,
+    setScreenStream) => {
+    
     if (!localStream) return;
 
     // Save the original video track if switching back later
@@ -15,6 +20,7 @@ export const startScreenSharing = async (localStream, setLocalStream, videoRefLo
         const screenTrack = screenStream.getVideoTracks()[0];
         videoRefLocal.current.srcObject = screenStream;
         setLocalStream(screenStream);
+        setLocalStream(screenStream)
         console.log("Screen sharing started");
 
         screenTrack.onended = () => {

@@ -22,6 +22,7 @@ const CallContextProvider = ({ children }) => {
     const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [status, setStatus] = useState({})
     const [originalVideoTrack, setOriginalVideoTrack] = useState(null);
+    const [screenStream, setScreenStream] = useState()
 
     const videoRefLocal = useRef()
     const videoRefRemote = useRef()
@@ -57,7 +58,7 @@ const CallContextProvider = ({ children }) => {
     }
 
     const endCall = () => {
-        endCallAction(setCalling, setCallStatus, localStream, videoRefLocal, videoRefRemote)
+        endCallAction(setCalling, setCallStatus, localStream, videoRefLocal, videoRefRemote, screenStream)
     }
 
     const toggleMute = () => {
@@ -70,24 +71,11 @@ const CallContextProvider = ({ children }) => {
         turnOffCamera(localStream)
     };
 
-    // screen sharing
-    // const { startSharing, stopSharing } = screenSharing(localStream, setLocalStream, videoRefLocal)
-    // console.log(isScreenSharing);
-    // const toggleScreenSharing = () => {
-    //     if (isScreenSharing) {
-    //         stopSharing();
-    //     } else {
-    //         startSharing();
-    //     }
-    //     setIsScreenSharing((prevState) => !prevState);
-    // };
-
     const toggleScreenSharing = async () => {
         if (isScreenSharing) {
-            console.log('call this function');
             stopScreenSharing(originalVideoTrack, videoRefLocal, setLocalStream);
         } else {
-            startScreenSharing(localStream, setLocalStream, videoRefLocal, setOriginalVideoTrack);
+            startScreenSharing(localStream, setLocalStream, videoRefLocal, setOriginalVideoTrack, setScreenStream);
         }
         setIsScreenSharing(prevState => !prevState);
     };
