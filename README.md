@@ -1,5 +1,5 @@
 # WhatsApp Clone Project Plan
-![Uploading MVC_Fronend.jpg]()
+![MVC Frontend Architecture]([https://example.com/image.jpg](https://github.com/Shimul-Zahan/MVC-Client/blob/main/MVC_Fronend.jpg))
 
 ## Introduction
 
